@@ -19,14 +19,14 @@ protected:
     
     static GateDescriptor interruptDescriptorTable[256];
     
-    struct interruptDescriptorTablePointer
+    struct InterruptDescriptorTablePointer
     {
         uint16_t size;
         uint32_t base;
     } __attribute__((packed));
     
     static void SetInterruptDescriptorTableEntry(
-        uint16_t handlerAddressLowBits,
+        uint8_t interruptNumber,
         uint16_t codeSegmentSelectorOffset,
         void (*handler)(),
         uint8_t DescriptorPrivillegeLevel,

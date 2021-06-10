@@ -6,7 +6,7 @@ InterruptManager::GateDescriptor InterruptManager::interruptDescriptorTable[256]
 
 
 void InterruptManager::SetInterruptDescriptorTableEntry(
-    uint16_t handlerAddressLowBits,
+    uint8_t interruptNumber,
     uint16_t codeSegmentSelectorOffset,
     void (*handler)(),
     uint8_t DescriptorPrivillegeLevel,
@@ -15,8 +15,8 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
     
     const uint8_t IDT_DESC_PRESENT = 0x80;
     
-    interruptDescriptorTable[interruptNumber].handlerAdressLowBits = ((uint32_t)handler) & 0xFFFF;
-    interruptDescriptorTable[interruptNumber].handlerAdressHighBits = ((uint32_t)handler >> 16) & 0xFFFF;
+    interruptDescriptorTable[interruptNumber].handlerAddressLowBits = ((uint32_t)handler) & 0xFFFF;
+    interruptDescriptorTable[interruptNumber].handlerAddressHighBits = (((uint32_t)handler) >> 16) & 0xFFFF;
     interruptDescriptorTable[interruptNumber].gdt_codeSegmentSelector = codeSegmentSelectorOffset;
     interruptDescriptorTable[interruptNumber].access = IDT_DESC_PRESENT | DescriptorType | ((DescriptorPrivillegeLevel&3) << 5); 
     interruptDescriptorTable[interruptNumber].reserved = 0;
@@ -28,10 +28,10 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
     const uint8_t IDT_INTERRUPT_GATE = 0xE;
     
     for(uint16_t i=0;i<256;++i)
-        SetinterruptDescriptorTableEntry(i, CodeSegment, &IgnoreInterruptRequest, 0, IDT_INTERRUPT_GATE);
+        SetInterruptDescriptorTableEntry(i, CodeSegment, &IgnoreInterruptRequest, 0, IDT_INTERRUPT_GATE);
     
-    SetinterruptDescriptorTableEntry(0x20, CodeSegment, &HandleInterruptRequest0x00, 0, IDT_INTERRUPT_GATE);
-    SetinterruptDescriptorTableEntry(0x21, CodeSegment, &HandleInterruptRequest0x01, 0, IDT_INTERRUPT_GATE);
+    SetInterruptDescriptorTableEntry(0x20, CodeSegment, &HandleInterruptRequest0x00, 0, IDT_INTERRUPT_GATE);
+    SetInterruptDescriptorTableEntry(0x21, CodeSegment, &HandleInterruptRequest0x01, 0, IDT_INTERRUPT_GATE);
     
     InterruptDescriptorTablePointer idt;
     idt.size = 256 * sizeof(GateDescriptor) - 1;

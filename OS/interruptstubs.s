@@ -1,5 +1,3 @@
-# sursa asm - preia date de la componente si le trimite in C++ ca parametri
-
 .set IRQ_BASE, 0x20
  
 .section .text
