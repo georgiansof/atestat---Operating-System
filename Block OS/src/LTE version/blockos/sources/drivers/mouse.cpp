@@ -4,6 +4,7 @@ using namespace blockos::common;
 using namespace blockos::hardwarecomm;
 using namespace blockos::drivers;
 
+void printf(char*);
 MouseEventHandler::MouseEventHandler()
 {
 }
@@ -13,16 +14,21 @@ void MouseEventHandler::OnActivate()
     
 }
 
-void MouseEventHandler::OnClickDown(uint8_t button)
+void MouseEventHandler::OnMouseDown(uint8_t button)
 {
-    
+    #ifndef GRAPHICSMODE
+    printf("mousedown");
+    #endif
 }
 
-void MouseEventHandler::OnClickUp(uint8_t button)
+void MouseEventHandler::OnMouseUp(uint8_t button)
 {
+    #ifndef GRAPHICSMODE
+    printf("mouseup");
+    #endif
 }
 
-void MouseEventHandler::OnMouseMovement(int x, int y)
+void MouseEventHandler::OnMouseMove(int x, int y)
 {
     
 }
@@ -73,19 +79,18 @@ uint32_t MouseDriver::HandleInterrupt(uint32_t esp)
     if(offset == 0)
     {
         if(buffer[1]!= 0 || buffer[2] != 0)
-            handler->OnMouseMovement(buffer[1], -buffer[2]);
-		
+            handler->OnMouseMove((int8_t)buffer[1], -((int8_t)buffer[2]));
         for(uint8_t i=0; i<3; ++i)
         {
             if((buffer[0] & (0x1<<i)) != (buttons & (0x1<<i)))
             {
-                if(buttons & (0x1<<1))
-                    handler->OnClickUp(i+1);
+                if(buttons & (0x1<<i))
+                    handler->OnMouseUp(i+1);
                 else
-                    handler->OnClickDown(i+1);
+                    handler->OnMouseDown(i+1);
             }
-            buttons = buffer[0];
         }
+        buttons = buffer[0];
     }
     
     return esp;

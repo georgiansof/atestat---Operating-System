@@ -5,11 +5,18 @@
 #include <drivers/driver.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
+#include <drivers/vga.h>
+#include <gui/desktop.h>
+#include <gui/window.h>
+
+
+#define GRAPHICSMODE
 
 using namespace blockos;
 using namespace blockos::common;
 using namespace blockos::hardwarecomm;
 using namespace blockos::drivers;
+using namespace blockos::gui;
 
 void printf(char* str)
 {
@@ -82,7 +89,7 @@ public:
                             | ((VideoMemory[80*y+x] & 0x0F00) << 4) 
                             | ((VideoMemory[80*y+x] & 0x00FF)); 
     }
-    void OnMouseMovement(int xoffset, int yoffset)
+    void OnMouseMove(int xoffset, int yoffset)
     {
         static volatile uint16_t* VideoMemory = (uint16_t*)0xb8000; 
         
@@ -121,25 +128,52 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     
     GlobalDescriptorTable gdt; 
     InterruptManager interrupts(0x20, &gdt);
-    
+    #ifdef GRAPHICSMODE
+    Desktop desktop(320,200,0x00,0x00,0xA8);
+    #endif
     printf("Initializing drivers...\n");
     
     DriverManager drvManager;
     
+
+        #ifdef GRAPHICSMODE
+        KeyboardDriver keyboard(&interrupts, &desktop);
+        #else 
         PrintfKeyboardEventHandler kbhandler;
         KeyboardDriver keyboard(&interrupts, &kbhandler);
+        #endif
         drvManager.AddDriver(&keyboard);
-
+        #ifdef GRAPHICSMODE
+        MouseDriver mouse(&interrupts, &desktop);
+        #else
         MouseToConsole mousehandler;
         MouseDriver mouse(&interrupts, &mousehandler);
+        #endif
         drvManager.AddDriver(&mouse);
         
 		PeripherialComponentInterconnectController PCIcontroller;
 		PCIcontroller.SelectDrivers(&drvManager, &interrupts);
 		
+        VideoGraphicsArray vga;
+
         drvManager.ActivateAll();
     
-    interrupts.Activate();
     printf("All set!\n");
-    while(open);
+    /************** VIDEO MODE INIT ************/
+    #ifdef GRAPHICSMODE
+    vga.SetMode(320,200,8);
+
+    Window win1(&desktop, 10,10,20,20, 0xA8, 0x00, 0x00);
+    desktop.AddChild(&win1);
+    Window win2(&desktop, 40,15,30,30, 0x00, 0xA8, 0x00);
+    desktop.AddChild(&win2);
+    #endif
+
+    interrupts.Activate();
+    while(open)
+    {
+        #ifdef GRAPHICSMODE
+        desktop.Draw(&vga);
+        #endif
+    }
 }

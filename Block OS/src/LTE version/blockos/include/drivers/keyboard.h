@@ -14,7 +14,6 @@ namespace blockos
         {
         public:
             KeyboardEventHandler();
-            
             virtual void OnKeyDown(char);
             virtual void OnKeyUp(char);
         };

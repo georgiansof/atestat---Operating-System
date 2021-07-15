@@ -17,9 +17,9 @@ namespace blockos
             MouseEventHandler();
             
             virtual void OnActivate();
-            virtual void OnClickDown(blockos::common::uint8_t button);
-            virtual void OnClickUp(blockos::common::uint8_t button);
-            virtual void OnMouseMovement(int x, int y);
+            virtual void OnMouseDown(blockos::common::uint8_t button);
+            virtual void OnMouseUp(blockos::common::uint8_t button);
+            virtual void OnMouseMove(int x, int y);
         };
         
         class MouseDriver : public blockos::hardwarecomm::InterruptHandler, public Driver
