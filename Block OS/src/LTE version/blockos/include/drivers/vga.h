@@ -13,6 +13,7 @@ namespace blockos
         class VideoGraphicsArray
         {
         protected:
+            common::int8_t pixelMap[200][320];
             common::uint8_t* FrameBufferSegment;
             hardwarecomm::Port8Bit miscPort;
             hardwarecomm::Port8Bit crtcIndexPort;
@@ -25,7 +26,6 @@ namespace blockos
             hardwarecomm::Port8Bit attributeControllerReadPort;
             hardwarecomm::Port8Bit attributeControllerWritePort;
             hardwarecomm::Port8Bit attributeControllerResetPort;
-
             void WriteRegisters(common::uint8_t* registers);
             common::uint8_t* GetFrameBufferSegment();
 
@@ -33,7 +33,7 @@ namespace blockos
         public:
             VideoGraphicsArray();
             ~VideoGraphicsArray();
-
+            void UpdateScreen();
             virtual bool SetMode(common::uint32_t width, common::uint32_t height, common::uint32_t colordepth);
             virtual bool SupportsMode(common::uint32_t width, common::uint32_t height, common::uint32_t colordepth);
             virtual void PutPixel(common::int32_t x, common::int32_t y, common::uint8_t r, common::uint8_t g, common::uint8_t b);

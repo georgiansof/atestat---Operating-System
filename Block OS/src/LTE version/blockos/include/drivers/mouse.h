@@ -27,7 +27,7 @@ namespace blockos
             blockos::hardwarecomm::Port8Bit dataport;
             blockos::hardwarecomm::Port8Bit commandport;
             
-            blockos::common::uint8_t buffer[3];
+            blockos::common::uint16_t buffer[3];
             blockos::common::uint8_t offset;
             blockos::common::uint8_t buttons;
             

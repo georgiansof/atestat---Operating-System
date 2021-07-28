@@ -1,5 +1,6 @@
 #include <common/types.h>
 #include <gdt.h>
+#include <memorymanagement.h>
 #include <hardwarecomm/interrupts.h>
 #include <hardwarecomm/pci.h>
 #include <drivers/driver.h>
@@ -8,7 +9,10 @@
 #include <drivers/vga.h>
 #include <gui/desktop.h>
 #include <gui/window.h>
+#include <multitasking.h>
 
+#define NULL 0
+#define null 0
 
 #define GRAPHICSMODE
 
@@ -17,6 +21,14 @@ using namespace blockos::common;
 using namespace blockos::hardwarecomm;
 using namespace blockos::drivers;
 using namespace blockos::gui;
+
+
+void Swap(int x,int y)
+{
+    int aux=x;
+    x=y;
+    y=aux;
+}
 
 void printf(char* str)
 {
@@ -56,9 +68,23 @@ void printf(char* str)
     
 }
 
+void printf(int32_t nr)
+{
+    char str[12];
+    int strlen=-1;
+    while(nr)
+    {
+        str[++strlen]=(nr%10)+'0';
+        nr/=10;
+    }
+    for(int i=0;i<(strlen+1)/2;++i)
+        Swap(str[i],str[strlen-i]);
+    printf(str);
+}
+
 void printfHex(uint8_t key)
 {
-    char* msg = "0x00";
+    char* msg = "00";
     char* hex = "0123456789ABCDEF";
     msg[0] = hex[(key >> 4) & 0x0F];
     msg[1] = hex[key & 0x0F];
@@ -111,6 +137,20 @@ public:
     }
 };
 
+void taskA()
+{
+    while(true)
+        printf("A");
+}
+
+void taskB()
+{
+    while(true)
+        printf("B");
+}
+
+
+
 typedef void (*constructor)();
 extern "C" constructor *start_ctors;
 extern "C" constructor *end_ctors;
@@ -126,8 +166,36 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     bool open=1;
     printf("Successfully booted BlockOS!\n\n");
     
-    GlobalDescriptorTable gdt; 
-    InterruptManager interrupts(0x20, &gdt);
+    GlobalDescriptorTable gdt;
+
+    uint32_t* memupper = (uint32_t*)(((size_t)multiboot_structure) + 8);
+    size_t heap = 10*1024*1024;
+    MemoryManager memoryManager(heap, (*memupper)*1024 - heap - 10*1024);
+
+    printf("heap: 0x");
+    printfHex((heap >> 24) & 0xFF);
+    printfHex((heap >> 16) & 0xFF);
+    printfHex((heap >> 8) & 0xFF);
+    printfHex(heap & 0xFF);
+    
+    void* allocated = memoryManager.malloc(1024);
+    printf("\nallocated: 0x");
+    printfHex(((size_t)allocated >> 24) & 0xFF);
+    printfHex(((size_t)allocated >> 16) & 0xFF);
+    printfHex(((size_t)allocated >> 8) & 0xFF);
+    printfHex((size_t)allocated & 0xFF);
+    printf("\n");
+
+    /************** Multitasking **************/
+    TaskManager taskManager;
+    /*Task task1(&gdt, taskA);
+    Task task2(&gdt, taskB);
+    taskManager.AddTask(&task1);
+    taskManager.AddTask(&task2);*/
+    printf("\nMultithreading module initialized\n");
+    /**************************************/
+
+    InterruptManager interrupts(0x20, &gdt, &taskManager);
     #ifdef GRAPHICSMODE
     Desktop desktop(320,200,0x00,0x00,0xA8);
     #endif
@@ -170,10 +238,12 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     #endif
 
     interrupts.Activate();
+
     while(open)
     {
         #ifdef GRAPHICSMODE
         desktop.Draw(&vga);
+        desktop.Update(&vga);
         #endif
     }
 }

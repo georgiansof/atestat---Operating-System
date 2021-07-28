@@ -5,6 +5,8 @@
 #include <drivers/driver.h>
 #include <common/types.h>
 #include <hardwarecomm/interrupts.h>
+#include <memorymanagement.h>
+
 namespace blockos
 {
 	namespace hardwarecomm

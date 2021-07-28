@@ -11,10 +11,12 @@ _ZN7blockos12hardwarecomm16InterruptManager19HandleException\num\()Ev:
     jmp int_bottom
 .endm
 
+
 .macro HandleInterruptRequest num
 .global _ZN7blockos12hardwarecomm16InterruptManager26HandleInterruptRequest\num\()Ev
 _ZN7blockos12hardwarecomm16InterruptManager26HandleInterruptRequest\num\()Ev:
     movb $\num + IRQ_BASE, (interruptnumber)
+    pushl $0
     jmp int_bottom
 .endm
 
@@ -59,25 +61,44 @@ HandleInterruptRequest 0x31
 
 int_bottom:
     
-    pusha
-    pushl %ds
-    pushl %es
-    pushl %fs
-    pushl %gs
+    #pusha
+    #pushl %ds
+    #pushl %es
+    #pushl %fs
+    #pushl %gs
     
+    pushl %ebp
+    pushl %edi
+    pushl %esi
+
+    pushl %edx
+    pushl %ecx
+    pushl %ebx
+    pushl %eax
     
     pushl %esp
     push (interruptnumber)
     call _ZN7blockos12hardwarecomm16InterruptManager15HandleInterruptEhj
-    # addl $5, %esp // sterge de pe stiva, nu e necesar, se suprascrie
-    movl %eax, %esp
-        
-    popl %gs
-    popl %fs
-    popl %es
-    popl %ds
-    popa
+    movl %eax, %esp # switch the stack
     
+    popl %eax
+    popl %ebx
+    popl %ecx
+    popl %edx
+
+    popl %esi
+    popl %edi
+    popl %ebp
+
+
+    #popl %gs
+    #popl %fs
+    #popl %es
+    #popl %ds
+    #popa
+    
+    add $4, %esp
+
 .global _ZN7blockos12hardwarecomm16InterruptManager15InterruptIgnoreEv
 _ZN7blockos12hardwarecomm16InterruptManager22IgnoreInterruptRequestEv:
     

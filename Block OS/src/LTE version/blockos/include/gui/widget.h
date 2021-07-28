@@ -23,10 +23,11 @@ namespace blockos
             common::uint8_t b;
             bool isFocusable;
         public:
+            Widget();
             Widget(Widget* parent, common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h, common::uint8_t r, common::uint8_t g, common::uint8_t b);
             ~Widget();
 
-
+            void operator = (Widget *w2);
             virtual void GetFocus(Widget* widget);
             virtual void ModelToScreen(common::int32_t &x,common::int32_t &y);
             virtual bool ContainsCoordinate(common::int32_t x, common::int32_t y);
@@ -37,20 +38,32 @@ namespace blockos
             virtual void OnMouseMove(common::int32_t oldx, common::int32_t oldy, common::int32_t newx, common::int32_t newy);
         };
 
+        class Window;
+
         class CompositeWidget : public Widget
         {
-        private:
-            Widget* children [100];
-            int numChildren;    
+            friend Window;
+        protected:
+            struct childrenList_node
+            {
+                childrenList_node *prev;
+                childrenList_node *next;
+                Widget *child;
+
+                childrenList_node() {}
+            } *firstchild, *lastchild;
+            //Widget* children [100];
+            //int numChildren;    
             Widget* focusedChild;
         public:
+        
             CompositeWidget(Widget* parent, 
             common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
             common::uint8_t r, common::uint8_t g, common::uint8_t b);
             ~CompositeWidget();
 
             virtual void GetFocus(Widget* widget);
-            virtual bool AddChild(Widget* child);
+            virtual void AddChild(Widget* child);
 
             virtual void Draw(common::GraphicsContext* gc);
             virtual void OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button);

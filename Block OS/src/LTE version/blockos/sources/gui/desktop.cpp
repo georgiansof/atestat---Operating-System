@@ -15,6 +15,11 @@ Desktop::~Desktop()
 
 }
 
+void Desktop::Update(common::GraphicsContext* gc)
+{
+    gc -> UpdateScreen();
+}
+
 void Desktop::Draw(common::GraphicsContext* gc)
 {
     CompositeWidget::Draw(gc);
@@ -39,8 +44,8 @@ void Desktop::OnMouseUp(blockos::common::uint8_t button)
 void Desktop::OnMouseMove(int x, int y)
 { 
     /********** MOUSE SPEED *******/
-    x *= 0.25;
-    y *= 0.25;
+    x *= 0.5;
+    y *= 0.5;
     /******************************/
 
     int32_t newMouseX = MouseX + x;

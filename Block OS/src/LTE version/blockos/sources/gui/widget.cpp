@@ -70,7 +70,7 @@ CompositeWidget::CompositeWidget(Widget* parent,
 : Widget(parent, x,y,w,h, r,g,b)
 {
     focusedChild = 0;
-    numChildren = 0;
+    lastchild=firstchild=nullptr;
 }
 CompositeWidget::~CompositeWidget()
 {
@@ -84,55 +84,64 @@ void CompositeWidget::GetFocus(Widget* widget)
         parent->GetFocus(this);
 }
 
-bool CompositeWidget::AddChild(Widget* child)
+void CompositeWidget::AddChild(Widget* child)
 {
-    if(numChildren >= 100)
-        return false;
-    children[numChildren++] = child;
-    return true;
+    childrenList_node *tmp = new childrenList_node;
+    tmp->next = nullptr;
+    tmp->prev = lastchild;
+    tmp->child = child;
+
+    if(lastchild) lastchild->next=tmp,lastchild=tmp;
+    else lastchild=firstchild=tmp;
 }
 
 void CompositeWidget::Draw(GraphicsContext* gc)
 {
     Widget::Draw(gc);
-    for(int i=numChildren-1; i>=0; --i)
-        children[i]->Draw(gc);
+    for(childrenList_node *node=lastchild;node!=nullptr;node=node->prev)
+        node->child->Draw(gc);
 }
 
 void CompositeWidget::OnMouseDown(int32_t x, int32_t y, uint8_t button)
 {
-    for(int i=0; i < numChildren; ++i)
-        if(children[i]->ContainsCoordinate(x - this->x,y - this->y))
+    for(childrenList_node *node=firstchild;node!=nullptr;node=node->next)
+        if(node->child->ContainsCoordinate(x - this->x,y - this->y))
         {
-            children[i]->OnMouseDown(x - this->x,y - this->y, button);
+            //FIXME HERE
+            Widget *tmp;
+            tmp=node->child;
+            node->child=firstchild->child;
+            firstchild->child=tmp;
+            //
+            tmp->OnMouseDown(x - this->x,y - this->y, button);
             break;
         }
 }
 void CompositeWidget::OnMouseUp(int32_t x, int32_t y, uint8_t button)
 {
-    for(int i=0; i < numChildren; ++i)
-        if(children[i]->ContainsCoordinate(x - this->x,y - this->y))
+    for(childrenList_node *node=firstchild;node!=nullptr;node=node->next)
+        if(node->child->ContainsCoordinate(x - this->x,y - this->y))
         {
-            children[i]->OnMouseUp(x - this->x,y - this->y, button);
+            node->child->OnMouseUp(x - this->x,y - this->y, button);
             break;
         }
 }
 void CompositeWidget::OnMouseMove(int32_t oldx, int32_t oldy, int32_t newx, int32_t newy)
 {
-    int firstchild = -1;
-    for(int i=0; i < numChildren; ++i)
-        if(children[i]->ContainsCoordinate(oldx - this->x,oldy - this->y))
+    Widget *firstchild;
+    for(childrenList_node *node=this->firstchild;node!=nullptr;node=node->next)
+        if(node->child->ContainsCoordinate(oldx - this->x,oldy - this->y))
         {
-            children[i]->OnMouseMove(oldx - this->x,oldy - this->y, newx - this->x, newy - this->y);
-            firstchild=i;
+            node->child->OnMouseMove(oldx - this->x,oldy - this->y, newx - this->x, newy - this->y);
+            firstchild=node->child;
             break;
         }
     
-    for(int i=0; i < numChildren; ++i)
-        if(children[i]->ContainsCoordinate(newx - this->x,newy - this->y))
+    for(childrenList_node *node=this->firstchild;node!=nullptr;node=node->next)
+        if(node->child->ContainsCoordinate(newx - this->x,newy - this->y))
         {
-            if(firstchild!=i)
-                children[i]->OnMouseMove(oldx - this->x,oldy - this->y, newx - this->x, newy - this->y);
+            if(firstchild!=node->child)
+                node->child->OnMouseMove(oldx - this->x,oldy - this->y, newx - this->x, newy - this->y);
             break;
         }
 }
@@ -146,4 +155,17 @@ void CompositeWidget::OnKeyUp(char str)
 {
     if(focusedChild)
         focusedChild->OnKeyUp(str);
+}
+
+void Widget::operator = (Widget *w2)
+{
+    this->parent=w2->parent;
+    this->x=w2->x;
+    this->y=w2->y;
+    this->w=w2->w;
+    this->h=w2->h;
+    this->r=w2->r;
+    this->g=w2->g;
+    this->b=w2->b;
+    this->isFocusable=w2->isFocusable;
 }

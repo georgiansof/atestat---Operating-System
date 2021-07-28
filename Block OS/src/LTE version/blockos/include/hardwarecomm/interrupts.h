@@ -1,6 +1,7 @@
 #ifndef __BLOCKOS__HARDWARECOMM__INTERRUPTS_H
 #define __BLOCKOS__HARDWARECOMM__INTERRUPTS_H
 
+#include <multitasking.h>
 #include <common/types.h>
 #include <hardwarecomm/port.h>
 #include <gdt.h>
@@ -16,7 +17,7 @@ namespace blockos
         protected:
             blockos::common::uint8_t InterruptNumber;
             InterruptManager* interruptManager;
-            InterruptHandler(InterruptManager* interruptManager, blockos::common::uint8_t interruptNumber);
+            InterruptHandler(InterruptManager* interruptManager, blockos::common::uint8_t InterruptNumber);
             ~InterruptHandler();
         public:
             virtual blockos::common::uint32_t HandleInterrupt(blockos::common::uint32_t esp);
@@ -29,7 +30,8 @@ namespace blockos
             
             static InterruptManager* ActiveInterruptManager;
             InterruptHandler* handlers[256];
-            
+            TaskManager *taskManager;
+
             struct GateDescriptor
             {
                 blockos::common::uint16_t handlerAddressLowBits;
@@ -106,7 +108,7 @@ namespace blockos
             
         public:
             
-            InterruptManager(blockos::common::uint16_t hardwareInterruptOffset, blockos::GlobalDescriptorTable* globalDescriptorTable);
+            InterruptManager(blockos::common::uint16_t hardwareInterruptOffset, blockos::GlobalDescriptorTable* globalDescriptorTable, blockos::TaskManager* taskManager);
             ~InterruptManager();
             blockos::common::uint16_t HardwareInterruptOffset();
             void Activate();

@@ -2,6 +2,7 @@
 
 using namespace blockos::hardwarecomm;
 using namespace blockos::common;
+using namespace blockos;
 
 void printf(char*);
 void printfHex(uint8_t);
@@ -57,14 +58,15 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
     interruptDescriptorTable[interrupt].reserved = 0;
     
 }
-InterruptManager::InterruptManager(uint16_t hardwareInterruptOffset, GlobalDescriptorTable* globalDescriptorTable) 
+InterruptManager::InterruptManager(uint16_t hardwareInterruptOffset, GlobalDescriptorTable* globalDescriptorTable,TaskManager* taskManager) 
 : programmableInterruptControllerMasterCommandPort(0x20),
   programmableInterruptControllerMasterDataPort(0x21),
   programmableInterruptControllerSlaveCommandPort(0xA0),
   programmableInterruptControllerSlaveDataPort(0xA1)
 {
+    this->taskManager = taskManager;
 	this->hardwareInterruptOffset = hardwareInterruptOffset;
-    uint16_t CodeSegment = globalDescriptorTable->CodeSegmentSelector();
+    uint32_t CodeSegment = globalDescriptorTable->CodeSegmentSelector();
 	
     const uint8_t IDT_INTERRUPT_GATE = 0xE;
     for(uint8_t i=255;i>0;--i)
@@ -178,12 +180,16 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interrupt, uint32_t esp)
         printf("UNHANDLED INTERRUPT 0x");
         printfHex(interrupt);
     }
-    // nu se afiseaza interrupt pentru timer
+    
+    if(interrupt == hardwareInterruptOffset)
+    {
+        esp = (uint32_t)taskManager->Schedule((CPUState*) esp);
+    }
     
     if(hardwareInterruptOffset <= interrupt && interrupt < hardwareInterruptOffset+16)
     {
-        programmableInterruptControllerMasterCommandPort.Write(hardwareInterruptOffset);
-        if(hardwareInterruptOffset+8 <= interrupt) programmableInterruptControllerSlaveCommandPort.Write(hardwareInterruptOffset);
+        programmableInterruptControllerMasterCommandPort.Write(0x20);
+        if(hardwareInterruptOffset+8 <= interrupt) programmableInterruptControllerSlaveCommandPort.Write(0x20);
     }
     
     return esp;

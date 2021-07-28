@@ -4,10 +4,12 @@ LDPARAMS = -melf_i386
 
 objects = obj/loader.o \
 	  obj/gdt.o \
+	  obj/memorymanagement.o \
 	  obj/drivers/driver.o \
 	  obj/hardwarecomm/port.o \
 	  obj/hardwarecomm/interruptstubs.o \
 	  obj/hardwarecomm/interrupts.o \
+	  obj/multitasking.o \
 	  obj/hardwarecomm/pci.o \
 	  obj/drivers/keyboard.o \
 	  obj/drivers/mouse.o \
@@ -51,6 +53,11 @@ mykernel.iso: mykernel.bin
 install: mykernel.bin
 	sudo cp $< /boot/mykernel.bin
 	
-.PHONY: clean
+.PHONY: clean exec
 clean:
 	rm -rf iso obj mykernel.bin mykernel.iso ../../../iso_output/mykernel.iso
+
+exec:
+	make clean
+	make run
+
