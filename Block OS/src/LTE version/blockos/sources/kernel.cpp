@@ -25,7 +25,7 @@ using namespace blockos::drivers;
 using namespace blockos::gui;
 using namespace blockos::common::containers;
 
-#ifdef GRAPHICSMODE
+#ifdef GRAPHICSMODE // colors
 
 #define BLACK 0x00 
 #define BROWN 0x30
@@ -101,10 +101,11 @@ using namespace blockos::common::containers;
 #define BRICK_ORANGE 0x1C 
 #define DARK_ORANGE 0x14 
 
-#else
+#endif
 
 void printf(const char* str)
 {
+#ifndef GRAPHICSMODE
     static volatile uint16_t* VideoMemory = (uint16_t*)0xb8000; 
     static uint8_t x=0, y=0;
     
@@ -138,16 +139,20 @@ void printf(const char* str)
             y=0;
         }
     }
+#endif
 }
 void printf(char c)
 {
+#ifndef GRAPHICSMODE
     char msg[2];
     msg[0]=c;
     msg[1]=null;
     printf(msg);
+#endif
 }
 void printf(int32_t nr)
 {
+#ifndef GRAPHICSMODE
     char str[12];
     int strlen=-1;
     if(nr==0)
@@ -166,24 +171,30 @@ void printf(int32_t nr)
         Swap(str[i],str[strlen-i]);
     str[strlen+1]=NULL;
     printf(str);
+#endif
 }
 void printf(bool x)
 {
+#ifndef GRAPHICSMODE
     char str[2];
     if(x==0) str[0]='0';
     if(x==1) str[0]='1';
     str[1]=NULL;
     printf(str);
+#endif
 }
 void printfHex(uint8_t key)
 {
+#ifndef GRAPHICSMODE
     char* msg = "00";
     char* hex = "0123456789ABCDEF";
     msg[0] = hex[(key >> 4) & 0x0F];
     msg[1] = hex[key & 0x0F];
     printf(msg); 
+#endif
 }
 
+#ifndef GRAPHICSMODE // cout, mousehandler, kbhandler
 class outStream
 {
     public:
@@ -244,7 +255,6 @@ public:
                             | ((VideoMemory[80*y+x] & 0x00FF)); 
     }
 };
-
 #endif
 
 void taskA()
@@ -295,8 +305,8 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     /*Task task1(&gdt, taskA);
     Task task2(&gdt, taskB);
     taskManager.AddTask(&task1);
-    taskManager.AddTask(&task2);*/
-    printf("\nMultithreading module initialized\n");
+    taskManager.AddTask(&task2);
+    printf("\nMultithreading module initialized\n");*/
     /**************************************/
 
     InterruptManager interrupts(0x20, &gdt, &taskManager);
