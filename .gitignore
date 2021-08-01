@@ -1,8 +1,6 @@
 
-Block OS/iso_output/mykernel.iso
-Block OS/src/LTE version/blockos/mykernel.bin
-Block OS/src/LTE version/blockos/mykernel.iso
-Block OS/src/LTE version/blockos/obj/kernel.o
+*.bin
 *.iso
-Block OS_bk/*
 *.o
+Block OS_bk/*
+
