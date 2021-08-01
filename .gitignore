@@ -4,3 +4,5 @@ Block OS/src/LTE version/blockos/mykernel.bin
 Block OS/src/LTE version/blockos/mykernel.iso
 Block OS/src/LTE version/blockos/obj/kernel.o
 *.iso
+Block OS_bk/*
+*.o
