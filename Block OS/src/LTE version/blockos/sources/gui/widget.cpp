@@ -15,7 +15,163 @@ Widget::Widget(Widget* parent, common::int32_t x, common::int32_t y, common::int
     this->b = b;
     this->isFocusable = true;
 }
+
+Widget::Widget(Widget* parent, common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h, common::uint8_t colorIndex): KeyboardEventHandler()
+{
+    this->parent = parent;
+    this->x = x;
+    this->y = y;
+    this->w = w;
+    this->h = h;
+    int8_t r,g,b;
+    GetRGB(colorIndex,r,g,b);
+    this->r = r;
+    this->g = g;
+    this->b = b;
+    this->isFocusable = true;
+}
+
+void Widget::GetRGB(int8_t colorIndex, int8_t &r, int8_t &g, int8_t &b)
+{
+    switch(colorIndex)
+    {
+        case 0x00: r = 0x00 , g = 0x00 , b = 0x00;
+            break;
+        case 0x01: r = 0x00 , g = 0x00 , b = 0xA8;
+            break;
+        case 0x02: r = 0x00 , g = 0xA8 , b = 0x00;
+            break;
+        case 0x03: r = 0x00 , g = 0xA8 , b = 0xA8;
+            break;
+        case 0x04: r = 0xA8 , g = 0x00 , b = 0x00;
+            break;
+        case 0x05: r = 0xA8 , g = 0x00 , b = 0xA8;
+            break;
+        case 0x06: r = 0xA8 , g = 0xA8 , b = 0x00; 
+            break;
+        case 0x07: r = 0xA8 , g = 0xA8 , b = 0xA8;
+            break;
+        case 0x08: r = 0x00 , g = 0x00 , b = 0x57;
+            break;
+        case 0x09: r = 0x00 , g = 0x00, b = 0xFF;
+            break;
+        case 0x0A: r = 0x00 , g = 0xA8 , b = 0x57;
+            break;
+        case 0x0B: r = 0x00 , g = 0xA8 , b = 0xFF;
+            break;
+        case 0x0C: r = 0xA8 , g = 0x00 , b = 0x57;
+            break;
+        case 0x0D: r = 0xA8 , g = 0x00 , b = 0xFF;
+            break;
+        case 0x0E: r = 0xA8 , g = 0xA8 , b = 0x57;
+            break;
+        case 0x0F: r = 0xA8 , g = 0xA8 , b = 0xFF;
+            break;
+        case 0x10: r = 0x00 , g = 0x57 , b = 0x00;
+            break;
+        case 0x11: r = 0x00 , g = 0x57, b = 0xA8;
+            break;
+        case 0x12: r = 0x00 , g = 0xFF,  b = 0x00;
+            break;
+        case 0x13: r = 0x00 ,g = 0xFF , b = 0xA8;
+            break;
+        case 0x14: r = 0xA8 , g = 0x57 , b = 0x00;
+            break;
+        case 0x15: r = 0xA8 , g = 0x57 , b = 0xA8;
+            break;
+        case 0x16: r = 0xA8 , g = 0xFF , b = 0x00;
+            break;
+        case 0x17: r = 0xA8 , g = 0xFF , b = 0xA8;
+            break;
+        case 0x18: r = 0x00 , g = 0x57 , b = 0x57;
+            break;
+        case 0x19: r = 0x00 , g = 0x57 , b = 0xFF;
+            break;
+        case 0x1A: r = 0x00 , g = 0xFF , b = 0x57;
+            break;
+        case 0x1B: r = 0x00 , g = 0xFF , b = 0xFF;
+            break;
+        case 0x1C: r = 0xA8 , g = 0x57 , b = 0x57;
+            break;
+        case 0x1D: r = 0xA8 , g = 0x57 , b = 0xFF;
+            break;
+        case 0x1E: r = 0xA8 , g = 0xFF , b = 0x57;
+            break;
+        case 0x1F: r = 0xA8 , g = 0xFF , b = 0xFF;
+            break;
+        case 0x20: r = 0x57 , g = 0x00 , b = 0x00;
+            break;
+        case 0x21: r = 0x57 , g = 0x00 , b = 0xA8;
+            break;
+        case 0x22: r = 0x57 , g = 0xA8 , b = 0x00;
+            break;
+        case 0x23: r = 0x57 , g = 0xA8 , b = 0xA8;
+            break;
+        case 0x24: r = 0xFF , g = 0x00 , b = 0x00;
+            break;
+        case 0x25: r = 0xFF , g = 0x00 , b = 0xA8;
+            break;
+        case 0x26: r = 0xFF , g = 0xA8 , b = 0x00;
+            break;
+        case 0x27: r = 0xFF , g = 0xA8 , b = 0xA8;
+            break;
+        case 0x28: r = 0x57 , g = 0x00 , b = 0x57;
+            break;
+        case 0x29: r = 0x57 , g = 0x00 , b = 0xFF;
+            break;
+        case 0x2A: r = 0x57 , g = 0xA8 , b = 0x57;
+            break;
+        case 0x2B: r = 0x57 , g = 0xA8 , b = 0xFF;
+            break;
+        case 0x2C: r = 0xFF , g = 0x00 , b = 0x57;
+            break;
+        case 0x2D: r = 0xFF , g = 0x00 , b = 0xFF;
+            break;
+        case 0x2E: r = 0xFF , g = 0xA8 , b = 0x57;
+            break;
+        case 0x2F: r = 0xFF , g = 0xA8 , b = 0xFF;
+            break;
+        case 0x30: r = 0x57 , g = 0x57 , b = 0x00;
+            break;
+        case 0x31: r = 0x57 , g = 0x57 , b = 0xA8;
+            break;
+        case 0x32: r = 0x57 , g = 0xFF , b = 0x00;
+            break;
+        case 0x33: r = 0x57 , g = 0xFF , b = 0xA8;
+            break;
+        case 0x34: r = 0xFF , g = 0x57 , b = 0x00;
+            break;
+        case 0x35: r = 0xFF , g = 0x57 , b = 0xA8;
+            break;
+        case 0x36: r = 0xFF , g = 0xFF , b = 0x00;
+            break;
+        case 0x37: r = 0xFF , g = 0xFF , b = 0xA8;
+            break;
+        case 0x38: r = 0x57 , g = 0x57 , b = 0x57;
+            break;
+        case 0x39: r = 0x57 , g = 0x57 , b = 0xFF;
+            break;
+        case 0x3A: r = 0x57 , g = 0xFF , b = 0x57;
+            break;
+        case 0x3B: r = 0x57 , g = 0xFF , b = 0xFF;
+            break;
+        case 0x3C: r = 0xFF , g = 0x57 , b = 0x57;
+            break;
+        case 0x3D: r = 0xFF , g = 0x57 , b = 0xFF;
+            break;
+        case 0x3E: r = 0xFF , g = 0xFF , b = 0x57;
+            break;
+        case 0x3F: r = 0xFF , g = 0xFF , b = 0xFF;
+            break;
+    }
+}
+
+
 Widget::~Widget()
+{
+}
+
+Widget::Widget()
 {
 }
 
@@ -72,9 +228,32 @@ CompositeWidget::CompositeWidget(Widget* parent,
     focusedChild = 0;
     lastchild=firstchild=nullptr;
 }
+
+CompositeWidget::CompositeWidget(Widget* parent, 
+                common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
+                common::uint8_t colorIndex)
+: Widget(parent, x,y,w,h, colorIndex)
+{
+    focusedChild = 0;
+    lastchild=firstchild=nullptr;
+}
+
+CompositeWidget::CompositeWidget() : Widget()
+{
+    focusedChild = 0;
+    lastchild=firstchild=nullptr;
+}
+
+
 CompositeWidget::~CompositeWidget()
 {
-
+    if(firstchild!=nullptr)
+    {   
+        for(childrenList_node *node=firstchild->next;node->next!=nullptr;node=node->next)
+            delete node->prev;
+        if(lastchild!=nullptr) delete lastchild;
+        firstchild=lastchild=0;
+    }
 }
 
 void CompositeWidget::GetFocus(Widget* widget)
@@ -93,6 +272,31 @@ void CompositeWidget::AddChild(Widget* child)
 
     if(lastchild) lastchild->next=tmp,lastchild=tmp;
     else lastchild=firstchild=tmp;
+}
+
+void CompositeWidget::RemoveChild(Widget* child)
+{
+    for(childrenList_node *node=firstchild;node!=nullptr;node=node->next)
+        if(node->child==child)
+        {
+            if(node->next!=nullptr && node->prev!=nullptr)   
+            {
+                node->prev->next=node->next;
+                node->next->prev=node->prev;
+            }
+            else if(node->prev==nullptr)
+                {
+                    if(node->next==nullptr) firstchild=lastchild=nullptr;
+                    else firstchild=node->next,node->next->prev=nullptr;
+                }
+            else if(node->next==nullptr && node->prev!=0)
+                    {
+                        node->prev->next=nullptr;
+                        lastchild=node->prev;
+                    }
+            delete node;
+            break;
+        }
 }
 
 void CompositeWidget::Draw(GraphicsContext* gc)

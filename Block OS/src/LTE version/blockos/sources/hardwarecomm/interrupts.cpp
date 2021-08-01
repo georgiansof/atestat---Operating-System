@@ -4,7 +4,8 @@ using namespace blockos::hardwarecomm;
 using namespace blockos::common;
 using namespace blockos;
 
-void printf(char*);
+void printf(const char*);
+void printf(uint32_t);
 void printfHex(uint8_t);
 
 InterruptHandler::InterruptHandler(InterruptManager* interruptManager, uint8_t InterruptNumber)
@@ -24,12 +25,6 @@ uint32_t InterruptHandler::HandleInterrupt(uint32_t esp)
 {
     return esp;
 }
-
-
-
-
-
-
 
 
 void InterruptManager::InterruptIgnore()

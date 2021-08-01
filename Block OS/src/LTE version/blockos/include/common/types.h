@@ -1,6 +1,13 @@
- 
 #ifndef __BLOCKOS__COMMON__TYPES_H
 #define __BLOCKOS__COMMON__TYPES_H
+
+#define NULL 0
+#define null 0
+
+namespace drivers
+{
+class VideoGraphicsArray;
+}
 
 namespace blockos
 {
@@ -21,5 +28,14 @@ namespace blockos
 		typedef const char* string;
         typedef uint32_t size_t;
     }
+    
+    template <typename type> void Swap(type &x,type &y)
+    {
+        type aux=x;
+        x=y;
+        y=aux;
+    }
 }  
+
+
 #endif

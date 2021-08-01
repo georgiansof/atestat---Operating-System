@@ -3,6 +3,22 @@
 using namespace blockos::common;
 using namespace blockos::gui;
 
+
+/*Button::Button(Widget* parent, common::int32_t WindowX, common::int32_t WindowY) 
+: Widget(parent,WindowX-8,WindowY-9,7,7,RED)
+{
+
+}
+
+void Button::OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button)
+{
+    if(button==1)
+    {
+        Button::~Button();
+        parent->Widget::~Widget();
+    }
+}*/
+
 Window::Window(Widget* parent,
                common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
                common::uint8_t r, common::uint8_t g, common:: uint8_t b) 
@@ -10,9 +26,23 @@ Window::Window(Widget* parent,
 {
     Dragging = false;
 }
+
+Window::Window(Widget* parent,
+               common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
+               common::uint8_t colorIndex) 
+: CompositeWidget(parent, x,y,w,h, colorIndex)
+{
+    
+    Dragging = false;
+}
+
+Window::Window() : CompositeWidget()
+{
+}
+
 Window::~Window()
 {
-
+    CompositeWidget::~CompositeWidget();
 }
 
 void Window::OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button)

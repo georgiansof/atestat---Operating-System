@@ -1,9 +1,12 @@
 #include <hardwarecomm/pci.h>
+
+
 using namespace blockos::common;
 using namespace blockos::drivers;
 using namespace blockos::hardwarecomm;
 
-void printf(char*);
+void printf(const char*);
+void printf(uint32_t);
 void printfHex(uint8_t);
 
 PeripherialComponentInterconnectDeviceDescriptor::PeripherialComponentInterconnectDeviceDescriptor()

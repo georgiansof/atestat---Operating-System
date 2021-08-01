@@ -4,8 +4,8 @@ using namespace blockos::common;
 using namespace blockos::hardwarecomm;
 using namespace blockos::drivers;
 
-void printf(char*);
-void printf(int32_t);
+void printf(const char*);
+void printf(uint32_t);
 
 MouseEventHandler::MouseEventHandler()
 {
@@ -18,12 +18,16 @@ void MouseEventHandler::OnActivate()
 
 void MouseEventHandler::OnMouseDown(uint8_t button)
 {
+    #ifndef GRAPHICSMODE
     printf("mousedown");
+    #endif
 }
 
 void MouseEventHandler::OnMouseUp(uint8_t button)
 {
+    #ifndef GRAPHICSMODE
     printf("mouseup");
+    #endif
 }
 
 void MouseEventHandler::OnMouseMove(int x, int y)

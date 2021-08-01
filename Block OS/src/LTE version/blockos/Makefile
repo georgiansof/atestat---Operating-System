@@ -21,7 +21,7 @@ objects = obj/loader.o \
 
 run: mykernel.iso
 	cp mykernel.iso ../../../iso_output/
-	(killall VirtualBox && sleep 1) || true
+	(killall VirtualBoxVM && sleep 1) || true
 	VirtualBoxVM --startvm "atestat" &
 
 	  

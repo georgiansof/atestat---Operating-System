@@ -42,7 +42,7 @@ uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
         case 0x45:
         case 0xC5:
             break;
-            
+
         case 0x2A: if(!escape) {LSHIFT=1; SHIFT=1; printf(" LSHIFT ");} else functionkey=1; break;
         case 0xAA: if(!escape) {LSHIFT=0; if(RSHIFT==0) SHIFT=0;} else functionkey=0; break;
         case 0x1D: CTRL=1; printf(" CTRL ");break;
@@ -56,6 +56,7 @@ uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
         
         /// release
         
+        case 0xC6: break; // scroll lock
         case 0x81: break; // esc
         case 0xBB: break; // f1
         case 0xBC: break; // f2
@@ -137,6 +138,7 @@ uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
         case 0xB5: break; // ?
         case 0xD6: break; // <>
         /// press
+        case 0x46: printf(" SCROLL LOCK "); break;
         case 0x10: if(CAPSLOCK ^ SHIFT) printf("Q"); else printf("q"); break;
         case 0x11: if(CAPSLOCK ^ SHIFT) printf("W"); else printf("w"); break;
         case 0x12: if(CAPSLOCK ^ SHIFT) printf("E"); else printf("e"); break;
