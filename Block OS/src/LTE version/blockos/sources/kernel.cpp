@@ -1,3 +1,6 @@
+#define GRAPHICSMODE
+
+#include <gui/colors.h>
 #include <common/types.h>
 #include <common/containers/list.h>
 #include <common/containers/deque.h>
@@ -16,92 +19,12 @@
 #include <gui/window.h>
 #include <multitasking.h>
 
-//#define GRAPHICSMODE
-
 using namespace blockos;
 using namespace blockos::common;
 using namespace blockos::hardwarecomm;
 using namespace blockos::drivers;
 using namespace blockos::gui;
 using namespace blockos::common::containers;
-
-#ifdef GRAPHICSMODE // colors
-
-#define BLACK 0x00 
-#define BROWN 0x30
-#define GREY 0x38 
-#define SILVER 0x07 
-#define WHITE 0x3F
-
-#define VERY_LIGHT_BLUE 0x1F 
-#define LIGHT_CYAN 0x3B 
-#define CYAN 0x1B 
-#define AQUAMARINE_BLUE 0x23 
-#define LIGHT_BLUE 0x0B 
-#define LIGHT_BLUE1 0x2B 
-#define COSMIC_BLUE 0x19 
-#define BLUE 0x09 
-#define ROYAL_BLUE 0x01
-#define GREYED_BLUE 0x11 
-#define DARK_BLUE 0x08 
-
-#define VERNYL 0x0A
-
-#define TURQUOISE 0x03 
-#define TURQUOISE1 0x33
-#define GREEN_TURQUOISE 0x13 
-
-#define VERY_LIGHT_GREEN 0x17 
-#define LIGHT_GREEN 0x12
-#define LIGHT_GREEN1 0x32
-#define LIME 0x16 
-#define YELLOW_LIME 0x1E 
-#define GREEN_LIME 0x1A 
-#define GREEN_LIME1 0x3A 
-#define GRASS_GREEN 0x22 
-#define GREEN 0x02
-#define GREEN1 0x2A
-#define DEEP_SEA_GREEN 0x18
-#define DARK_GREEN 0x10 
-
-#define RED 0x04 
-#define CARMIN_RED 0x0C
-#define DARK_RED 0x20 
-#define STRONG_RED 0x24 
-#define LIGHT_CARMIN_RED 0x2C
-#define BRICK_RED 0x3C 
-
-#define MAGENTA 0x05 
-#define DARK_MAGENTA 0x28 
-#define STRONG_MAGENTA 0x2D 
-#define SKIN_PINK 0x27 
-#define LIGHT_PINK 0x2F 
-#define PINK 0x3D 
-#define PINK1 0x35 
-#define STRONG_PINK 0x25 
-#define DARK_PINK 0x15 
-
-#define LIGHT_PURPLE 0x0F
-#define GREYED_PURPLE 0x31 
-#define PINK_PURPLE 0x0D 
-#define LIGHT_PINK_PURPLE 0x1D 
-#define PURPLE 0x29
-#define COSMIC_PURPLE 0x39 
-#define DARK_PURPLE 0x21 
-
-#define LIGHT_YELLOW 0x37 
-#define LIGHT_YELLOW1 0x3E 
-#define YELLOW 0x36 
-#define GREYED_YELLOW 0x0E 
-#define DARK_YELLOW 0x06 
-
-#define LIGHT_ORANGE 0x26 
-#define SKIN_ORANGE 0x2E 
-#define ORANGE 0x34 
-#define BRICK_ORANGE 0x1C 
-#define DARK_ORANGE 0x14 
-
-#endif
 
 void printf(const char* str)
 {
@@ -347,10 +270,11 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
 #ifdef GRAPHICSMODE
     vga.SetMode(320,200,8);
 
-    Window win1(&desktop, 10,10,20,20, 0xA8, 0x00, 0x00);
+    Window win1(&desktop, 10,10,20,20, YELLOW);
     desktop.AddChild(&win1);
     Window win2(&desktop, 40,15,30,30, 0x00, 0xA8, 0x00);
     desktop.AddChild(&win2);
+
 #endif
     interrupts.Activate();
     

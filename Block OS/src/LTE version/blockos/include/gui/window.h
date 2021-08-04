@@ -3,31 +3,37 @@
 
 #include <drivers/mouse.h>
 #include <gui/widget.h>
+#include <gui/colors.h>
 
 namespace blockos
 {
     namespace gui
     {
-        /*class Button : public Widget
+        class Window;
+
+        class Button : public CompositeWidget
         {
         private:
             bool type; // 0 - exit, 1 - minimize;
+            Window *parent;
         public:
-            Button(Widget* parent,
-            common::int32_t WindowX, common::int32_t WindowY);
+            Button();
+            void initialise(Window* parent, bool type);
             ~Button();
             void OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button);
-        }*/
+        };
 
-        class Window : public CompositeWidget//, public Button
+        class Window : public CompositeWidget
         {
         protected:
             bool Dragging;
         public:
-            Window(Widget* parent,
+            Button exit_button;
+            Button minimize_button;
+            Window(CompositeWidget* parent,
                    common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
                    common::uint8_t r, common::uint8_t g, common:: uint8_t b);
-            Window(Widget* parent,
+            Window(CompositeWidget* parent,
                    common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
                    common::uint8_t colorIndex);
             Window();

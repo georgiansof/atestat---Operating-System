@@ -3,7 +3,19 @@
 using namespace blockos::common;
 using namespace blockos::gui;
 
-Widget::Widget(Widget* parent, common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h, common::uint8_t r, common::uint8_t g, common::uint8_t b): KeyboardEventHandler()
+Widget::Widget(CompositeWidget* parent, common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h, common::uint8_t r, common::uint8_t g, common::uint8_t b): KeyboardEventHandler()
+{
+    this->parent = parent;
+    this->x = x;
+    this->y = y;
+    this->w = w;
+    this->h = h;
+    this->r = r;
+    this->g = g;
+    this->b = b;
+    this->isFocusable = true;
+}
+void Widget::init(CompositeWidget* parent, common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h, common::uint8_t r, common::uint8_t g, common::uint8_t b)
 {
     this->parent = parent;
     this->x = x;
@@ -16,7 +28,35 @@ Widget::Widget(Widget* parent, common::int32_t x, common::int32_t y, common::int
     this->isFocusable = true;
 }
 
-Widget::Widget(Widget* parent, common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h, common::uint8_t colorIndex): KeyboardEventHandler()
+void Widget::SetWidget(Widget wgt)
+{
+    this->parent = wgt.parent;
+    this->x = wgt.x;
+    this->y = wgt.y;
+    this->w = wgt.w;
+    this->h = wgt.h;
+    this->r = wgt.r;
+    this->g = wgt.g;
+    this->b = wgt.b;
+    this->isFocusable = true;
+}
+
+Widget::Widget(CompositeWidget* parent, common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h, common::uint8_t colorIndex): KeyboardEventHandler()
+{
+    this->parent = parent;
+    this->x = x;
+    this->y = y;
+    this->w = w;
+    this->h = h;
+    int8_t r,g,b;
+    GetRGB(colorIndex,r,g,b);
+    this->r = r;
+    this->g = g;
+    this->b = b;
+    this->isFocusable = true;
+}
+
+void Widget::init(CompositeWidget* parent, common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h, common::uint8_t colorIndex)
 {
     this->parent = parent;
     this->x = x;
@@ -220,40 +260,46 @@ void Widget::OnMouseMove(common::int32_t oldx, common::int32_t oldy, common::int
 
 
 
-CompositeWidget::CompositeWidget(Widget* parent, 
+CompositeWidget::CompositeWidget(CompositeWidget* parent, 
                 common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
                 common::uint8_t r, common::uint8_t g, common::uint8_t b)
 : Widget(parent, x,y,w,h, r,g,b)
 {
     focusedChild = 0;
-    lastchild=firstchild=nullptr;
 }
 
-CompositeWidget::CompositeWidget(Widget* parent, 
+CompositeWidget::CompositeWidget(CompositeWidget* parent, 
                 common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
                 common::uint8_t colorIndex)
 : Widget(parent, x,y,w,h, colorIndex)
 {
     focusedChild = 0;
-    lastchild=firstchild=nullptr;
+}
+void CompositeWidget::init(CompositeWidget* parent, 
+                common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
+                common::uint8_t r, common::uint8_t g, common::uint8_t b)
+{
+    focusedChild = 0;
+    Widget::init(parent,x,y,w,h,r,g,b);
+}
+
+void CompositeWidget::init(CompositeWidget* parent, 
+                common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
+                common::uint8_t colorIndex)
+{
+    focusedChild = 0;
+    Widget::init(parent,w,y,w,h,colorIndex);
 }
 
 CompositeWidget::CompositeWidget() : Widget()
 {
     focusedChild = 0;
-    lastchild=firstchild=nullptr;
 }
 
 
 CompositeWidget::~CompositeWidget()
 {
-    if(firstchild!=nullptr)
-    {   
-        for(childrenList_node *node=firstchild->next;node->next!=nullptr;node=node->next)
-            delete node->prev;
-        if(lastchild!=nullptr) delete lastchild;
-        firstchild=lastchild=0;
-    }
+    children.empty();
 }
 
 void CompositeWidget::GetFocus(Widget* widget)
@@ -263,89 +309,64 @@ void CompositeWidget::GetFocus(Widget* widget)
         parent->GetFocus(this);
 }
 
-void CompositeWidget::AddChild(Widget* child)
-{
-    childrenList_node *tmp = new childrenList_node;
-    tmp->next = nullptr;
-    tmp->prev = lastchild;
-    tmp->child = child;
+void printf(const char*);
 
-    if(lastchild) lastchild->next=tmp,lastchild=tmp;
-    else lastchild=firstchild=tmp;
+void CompositeWidget::AddChild(CompositeWidget* child)
+{
+    children.push_back(child);
 }
 
-void CompositeWidget::RemoveChild(Widget* child)
+void CompositeWidget::RemoveChild(CompositeWidget* child)
 {
-    for(childrenList_node *node=firstchild;node!=nullptr;node=node->next)
-        if(node->child==child)
-        {
-            if(node->next!=nullptr && node->prev!=nullptr)   
-            {
-                node->prev->next=node->next;
-                node->next->prev=node->prev;
-            }
-            else if(node->prev==nullptr)
-                {
-                    if(node->next==nullptr) firstchild=lastchild=nullptr;
-                    else firstchild=node->next,node->next->prev=nullptr;
-                }
-            else if(node->next==nullptr && node->prev!=0)
-                    {
-                        node->prev->next=nullptr;
-                        lastchild=node->prev;
-                    }
-            delete node;
-            break;
-        }
+    children.erase(child);
 }
 
 void CompositeWidget::Draw(GraphicsContext* gc)
 {
     Widget::Draw(gc);
-    for(childrenList_node *node=lastchild;node!=nullptr;node=node->prev)
-        node->child->Draw(gc);
+    for(deque_iterator<CompositeWidget*> it=children.rbegin();it!=children.rend();--it)
+       it->CompositeWidget::Draw(gc);
 }
 
 void CompositeWidget::OnMouseDown(int32_t x, int32_t y, uint8_t button)
 {
-    for(childrenList_node *node=firstchild;node!=nullptr;node=node->next)
-        if(node->child->ContainsCoordinate(x - this->x,y - this->y))
+    for(deque_iterator<CompositeWidget*> it=children.begin();it!=children.end();++it)
+        if(it->ContainsCoordinate(x - this->x,y - this->y))
         {
-            //FIXME HERE
-            Widget *tmp;
-            tmp=node->child;
-            node->child=firstchild->child;
-            firstchild->child=tmp;
+            deque_node<CompositeWidget*> *tmp;
+            tmp=it.ptr;
+            it.ptr=children.begin().ptr;
+            children.begin().ptr=tmp;
             //
-            tmp->OnMouseDown(x - this->x,y - this->y, button);
+            tmp->info->OnMouseDown(x - this->x,y - this->y, button);
             break;
         }
 }
 void CompositeWidget::OnMouseUp(int32_t x, int32_t y, uint8_t button)
 {
-    for(childrenList_node *node=firstchild;node!=nullptr;node=node->next)
-        if(node->child->ContainsCoordinate(x - this->x,y - this->y))
+    for(deque_iterator<CompositeWidget*> it=children.begin();it!=children.end();++it)
+        if(it->ContainsCoordinate(x - this->x,y - this->y))
         {
-            node->child->OnMouseUp(x - this->x,y - this->y, button);
+            it->OnMouseUp(x - this->x,y - this->y, button);
             break;
         }
 }
 void CompositeWidget::OnMouseMove(int32_t oldx, int32_t oldy, int32_t newx, int32_t newy)
 {
-    Widget *firstchild;
-    for(childrenList_node *node=this->firstchild;node!=nullptr;node=node->next)
-        if(node->child->ContainsCoordinate(oldx - this->x,oldy - this->y))
+    CompositeWidget *firstchild;
+    for(deque_iterator<CompositeWidget*> it=children.begin();it!=children.end();++it)
+        if(it->ContainsCoordinate(oldx - this->x,oldy - this->y))
         {
-            node->child->OnMouseMove(oldx - this->x,oldy - this->y, newx - this->x, newy - this->y);
-            firstchild=node->child;
+            it->OnMouseMove(oldx - this->x,oldy - this->y, newx - this->x, newy - this->y);
+            firstchild=*it;
             break;
         }
     
-    for(childrenList_node *node=this->firstchild;node!=nullptr;node=node->next)
-        if(node->child->ContainsCoordinate(newx - this->x,newy - this->y))
+    for(deque_iterator<CompositeWidget*> it=children.begin();it!=children.end();++it)
+        if(it->ContainsCoordinate(newx - this->x,newy - this->y))
         {
-            if(firstchild!=node->child)
-                node->child->OnMouseMove(oldx - this->x,oldy - this->y, newx - this->x, newy - this->y);
+            if(firstchild!=*it)
+                it->OnMouseMove(oldx - this->x,oldy - this->y, newx - this->x, newy - this->y);
             break;
         }
 }

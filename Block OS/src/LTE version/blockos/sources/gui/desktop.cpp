@@ -38,7 +38,7 @@ void Desktop::Draw()
         gc -> PutPixel(MouseX, MouseY+i, 0xFF, 0xFF, 0xFF);
     }
 
-    this->Update();
+     this->Update();
 }
 
 void Desktop::OnMouseDown(blockos::common::uint8_t button)

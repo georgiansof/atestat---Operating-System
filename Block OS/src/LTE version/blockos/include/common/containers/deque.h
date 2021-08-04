@@ -45,18 +45,29 @@ namespace blockos
                     return it;
                 }
 
-                void operator ++() {ptr=ptr->next;}
-                void operator ++(int) {ptr=ptr->next;}
+                void operator ++() {if(ptr) ptr=ptr->next;}
+                void operator ++(int) {if(ptr) ptr=ptr->next;}
                 
-                void operator --() {ptr=ptr->prev;}
-                void operator --(int) {ptr=ptr->prev;}
+                void operator --() {if(ptr) ptr=ptr->prev;}
+                void operator --(int) {if(ptr) ptr=ptr->prev;}
+
+                void operator +=(int x)
+                {
+                    for(int i=1;i<=x;++i) 
+                        if(this->ptr!=nullptr) ++(*this);
+                }
+                void operator -=(int x)
+                {
+                    for(int i=1;i<=x;++i) 
+                        if(this->ptr!=nullptr) --(*this);
+                }
 
                 void operator =(deque_node<generalised> *x) {this->ptr=x;}
                 void operator =(deque_iterator x) {this->ptr=x->ptr;}
                 bool operator ==(deque_node<generalised> *x) {return x==ptr;}
                 bool operator !=(deque_node<generalised> *x) {return !(x==ptr);}
-                generalised operator *() {return ptr->info;}
-                deque_node<generalised>* operator ->() {return ptr;}
+                generalised& operator *() {return ptr->info;}
+                generalised& operator ->() {return ptr->info;}
                 deque_iterator<generalised>() {ptr=nullptr;}
                 deque_iterator<generalised>(deque_node<generalised>* ptr) {this->ptr=ptr;}
                 operator deque_node<generalised>*() {return ptr;}
@@ -72,13 +83,49 @@ namespace blockos
             public:
                 deque() {First=Last=nullptr;}
 
-                deque_iterator<generalised> begin() {it.ptr=First; return it;}
-                deque_iterator<generalised> end() {it.ptr=nullptr; return it;}
-                deque_iterator<generalised> rbegin() {it.ptr=Last; return it;}
-                deque_iterator<generalised> rend() {it.ptr=nullptr; return it;}
+                deque_iterator<generalised>& begin() {it.ptr=First; return it;}
+                deque_iterator<generalised>& end() {it.ptr=nullptr; return it;}
+                deque_iterator<generalised>& rbegin() {it.ptr=Last; return it;}
+                deque_iterator<generalised>& rend() {it.ptr=nullptr; return it;}
 
                 generalised& front() {return First->info;}
                 generalised& back() {return Last->info;}
+                void erase(generalised x)
+                {
+                    for(deque_iterator<generalised> it=begin();it!=end();)
+                        if(*it==x)
+                        {
+                            deque_iterator<generalised> tmp=it;
+                            if(it.ptr) ++it;
+
+                            if(tmp.ptr->next && tmp.ptr->prev)
+                            {
+                                tmp.ptr->prev->next=tmp.ptr->next;
+                                tmp.ptr->next->prev=tmp.ptr->prev;
+                                delete tmp;
+                            }
+                            else if(tmp.ptr->prev==nullptr && tmp.ptr->next==nullptr)
+                            {
+                                delete tmp;
+                                First=Last=0;
+                            }
+                            else if(tmp.ptr->next==nullptr)
+                                {
+                                    Last=tmp.ptr->prev;
+                                    tmp.ptr->prev->next=nullptr;
+                                    delete tmp;
+                                    break;
+                                }
+                            else if(tmp.ptr->prev==nullptr)
+                                {
+                                    First=tmp.ptr->next;
+                                    tmp.ptr->next->prev=nullptr;
+                                    delete tmp;
+                                }
+                        }
+                        else ++it;
+
+                }
                 bool isEmpty() {return First==nullptr;}
                 void empty() {while(!this->isEmpty()) pop_front();}
                 int size() {return Size;}

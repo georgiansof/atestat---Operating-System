@@ -4,10 +4,21 @@ using namespace blockos::common;
 using namespace blockos::gui;
 
 
-/*Button::Button(Widget* parent, common::int32_t WindowX, common::int32_t WindowY) 
-: Widget(parent,WindowX-8,WindowY-9,7,7,RED)
+Button::Button()
+: CompositeWidget()
 {
+}
+void Button::initialise(Window* parent, bool type)
+{
+    this->type=type;
+    this->parent=parent;
+    if(type==false) CompositeWidget::init(parent,parent->w-8,1, 7,7, RED);
+    //if(type==true) CompositeWidget::init(parent,w-8-8,+1, 7,7, LIGHT_YELLOW);
+}
 
+Button::~Button()
+{
+    Widget::~Widget();
 }
 
 void Button::OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button)
@@ -15,25 +26,32 @@ void Button::OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t b
     if(button==1)
     {
         Button::~Button();
-        parent->Widget::~Widget();
+        parent->~Window();
     }
-}*/
+}
 
-Window::Window(Widget* parent,
+Window::Window(CompositeWidget* parent,
                common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
                common::uint8_t r, common::uint8_t g, common:: uint8_t b) 
 : CompositeWidget(parent, x,y,w,h, r,g,b)
 {
     Dragging = false;
+    exit_button.initialise(this,false);
+    minimize_button.initialise(this,true);
+    AddChild(&exit_button);
+    AddChild(&minimize_button);
 }
 
-Window::Window(Widget* parent,
+Window::Window(CompositeWidget* parent,
                common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h,
                common::uint8_t colorIndex) 
 : CompositeWidget(parent, x,y,w,h, colorIndex)
 {
-    
     Dragging = false;
+    exit_button.initialise(this,false);
+    minimize_button.initialise(this,true);
+    AddChild(&exit_button);
+    AddChild(&minimize_button);
 }
 
 Window::Window() : CompositeWidget()
@@ -43,6 +61,7 @@ Window::Window() : CompositeWidget()
 Window::~Window()
 {
     CompositeWidget::~CompositeWidget();
+    parent->RemoveChild(this);
 }
 
 void Window::OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button)

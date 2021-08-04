@@ -255,6 +255,7 @@ uint8_t VideoGraphicsArray::GetColorIndex(uint8_t r, uint8_t g, uint8_t b)
     if(r == 0xFF && g == 0x57 && b == 0xFF) return 0x3D; 
     if(r == 0xFF && g == 0xFF && b == 0x57) return 0x3E; 
     if(r == 0xFF && g == 0xFF && b == 0xFF) return 0x3F; 
+    return 0x00;
 }
 void VideoGraphicsArray::PutPixel(int32_t x, int32_t y, uint8_t r, uint8_t g, uint8_t b)
 {

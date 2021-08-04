@@ -39,12 +39,17 @@ namespace blockos
                 }
                 void operator ++() {ptr=ptr->next;}
                 void operator ++(int) {ptr=ptr->next;}
+                void operator +=(int x)
+                {
+                    for(int i=1;i<=x;++i) 
+                        if(this->ptr!=nullptr) ++(*this);
+                }
                 void operator =(list_node<generalised> *x) {this->ptr=x;}
                 void operator =(list_iterator x) {this->ptr=x->ptr;}
                 bool operator ==(list_node<generalised> *x) {return x==ptr;}
                 bool operator !=(list_node<generalised> *x) {return !(x==ptr);}
-                generalised operator *() {return ptr->info;}
-                list_node<generalised>* operator ->() {return ptr;}
+                generalised& operator *() {return ptr->info;}
+                generalised& operator ->() {return ptr->info;}
                 list_iterator<generalised>() {ptr=nullptr;}
                 list_iterator<generalised>(list_node<generalised>* ptr) {this->ptr=ptr;}
                 operator list_node<generalised>*() {return ptr;}
@@ -66,6 +71,20 @@ namespace blockos
                 generalised& last() {return Last->info;}
                 bool isEmpty() {return First==nullptr;}
                 void empty() {while(!this->isEmpty()) pop_front();}
+                void erase(generalised val)
+                {
+                    if(this->begin().ptr!=nullptr)
+                        for(list_iterator<generalised> it=this->begin();it+1!=this->end();++it)
+                        {
+                            if(*(it+1)==val)
+                            {
+                                list_iterator<generalised> tmp=it,del=(it+1);
+                                it+=2;
+                                tmp.ptr->next=it.ptr;
+                                delete del;
+                            }
+                        }
+                }
                 int size() {return Size;}
                 void push_back(generalised x)
                 {
