@@ -23,18 +23,19 @@ Button::~Button()
 
 void Button::OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button)
 {
+    /// probably unsafe
     if(this->type==false)
     {
         if(button==1)
         {
             Button::~Button();
             parent->~Window();
+            delete this->parent;
         }
     }
     else
-    {
-        /// FIXME minimize button
-        
+    {   
+        this->parent->parent->RemoveChild(this->parent);
     }
 }
 

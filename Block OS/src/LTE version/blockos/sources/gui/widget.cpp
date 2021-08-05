@@ -321,6 +321,7 @@ void CompositeWidget::RemoveChild(CompositeWidget* child)
     children.erase(child);
 }
 
+
 void CompositeWidget::Draw(GraphicsContext* gc)
 {
     Widget::Draw(gc);

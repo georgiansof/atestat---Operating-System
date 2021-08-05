@@ -20,6 +20,7 @@ Desktop::~Desktop()
 
 }
 
+
 void Desktop::Update()
 {
     this->gc->UpdateScreen();

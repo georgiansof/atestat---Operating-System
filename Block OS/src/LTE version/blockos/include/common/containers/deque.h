@@ -102,25 +102,25 @@ namespace blockos
                             {
                                 tmp.ptr->prev->next=tmp.ptr->next;
                                 tmp.ptr->next->prev=tmp.ptr->prev;
-                                delete tmp;
+                                delete tmp.ptr;
                             }
                             else if(tmp.ptr->prev==nullptr && tmp.ptr->next==nullptr)
                             {
-                                delete tmp;
+                                delete tmp.ptr;
                                 First=Last=0;
                             }
                             else if(tmp.ptr->next==nullptr)
                                 {
                                     Last=tmp.ptr->prev;
                                     tmp.ptr->prev->next=nullptr;
-                                    delete tmp;
+                                    delete tmp.ptr;
                                     break;
                                 }
                             else if(tmp.ptr->prev==nullptr)
                                 {
                                     First=tmp.ptr->next;
                                     tmp.ptr->next->prev=nullptr;
-                                    delete tmp;
+                                    delete tmp.ptr;
                                 }
                         }
                         else ++it;

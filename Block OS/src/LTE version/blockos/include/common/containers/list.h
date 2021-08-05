@@ -81,7 +81,7 @@ namespace blockos
                                 list_iterator<generalised> tmp=it,del=(it+1);
                                 it+=2;
                                 tmp.ptr->next=it.ptr;
-                                delete del;
+                                delete del.ptr;
                             }
                         }
                 }
@@ -121,7 +121,7 @@ namespace blockos
                     list_iterator<generalised> tmp=First;
                     if(First->next) First=First->next;
                     else First=Last=nullptr;
-                    delete tmp;
+                    delete tmp.ptr;
                 }
             
             };
