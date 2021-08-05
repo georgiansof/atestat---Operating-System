@@ -127,7 +127,7 @@ namespace blockos
 
                 }
                 bool isEmpty() {return First==nullptr;}
-                void empty() {while(!this->isEmpty()) pop_front();}
+                void empty() {while(!(this->isEmpty())) pop_front();}
                 int size() {return Size;}
                 void push_back(generalised x)
                 {

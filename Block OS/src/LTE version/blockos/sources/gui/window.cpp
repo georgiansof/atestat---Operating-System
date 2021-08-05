@@ -13,7 +13,7 @@ void Button::initialise(Window* parent, bool type)
     this->type=type;
     this->parent=parent;
     if(type==false) CompositeWidget::init(parent,parent->w-8,1, 7,7, RED);
-    //if(type==true) CompositeWidget::init(parent,w-8-8,+1, 7,7, LIGHT_YELLOW);
+    if(type==true) CompositeWidget::init(parent,parent->w-8-8,+1, 7,7, YELLOW);
 }
 
 Button::~Button()
@@ -23,10 +23,18 @@ Button::~Button()
 
 void Button::OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button)
 {
-    if(button==1)
+    if(this->type==false)
     {
-        Button::~Button();
-        parent->~Window();
+        if(button==1)
+        {
+            Button::~Button();
+            parent->~Window();
+        }
+    }
+    else
+    {
+        /// FIXME minimize button
+        
     }
 }
 

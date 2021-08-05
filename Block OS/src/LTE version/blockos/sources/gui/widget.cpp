@@ -288,7 +288,7 @@ void CompositeWidget::init(CompositeWidget* parent,
                 common::uint8_t colorIndex)
 {
     focusedChild = 0;
-    Widget::init(parent,w,y,w,h,colorIndex);
+    Widget::init(parent,x,y,w,h,colorIndex);
 }
 
 CompositeWidget::CompositeWidget() : Widget()
