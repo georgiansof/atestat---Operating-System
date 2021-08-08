@@ -84,8 +84,8 @@ Window::Window(CompositeWidget* parent,
     {
         CompositeWidget::init(parent, x,y,w,h+9, colorIndex);
         this->position.x=x;
-        this->position.y=y;
-        this->position.h=h+9;
+        this->position.y=y+9;
+        this->position.h=h;
         this->position.w=w;
         Dragging = false;
         window_bar.initialise(this, exit_button, minimize_button);
