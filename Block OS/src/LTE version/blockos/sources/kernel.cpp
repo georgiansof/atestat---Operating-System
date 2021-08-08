@@ -270,7 +270,7 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
 #ifdef GRAPHICSMODE
     vga.SetMode(320,200,8);
 
-    Window *win1= new Window(&desktop, 10,10,20,20, DARK_MAGENTA);
+    Window *win1= new Window(&desktop, 10,10,25,25, DARK_MAGENTA);
     desktop.AddChild(win1);
     Window *win2 = new Window(&desktop, 40,15,30,30, 0x00, 0xA8, 0x00);
     desktop.AddChild(win2);

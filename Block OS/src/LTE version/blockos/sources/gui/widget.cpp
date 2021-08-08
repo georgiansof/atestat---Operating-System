@@ -313,7 +313,7 @@ void printf(const char*);
 
 void CompositeWidget::AddChild(CompositeWidget* child)
 {
-    children.push_back(child);
+    children.push_front(child);
 }
 
 void CompositeWidget::RemoveChild(CompositeWidget* child)
@@ -331,15 +331,21 @@ void CompositeWidget::Draw(GraphicsContext* gc)
 
 void CompositeWidget::OnMouseDown(int32_t x, int32_t y, uint8_t button)
 {
+    //FIXME window overlap
     for(deque_iterator<CompositeWidget*> it=children.begin();it!=children.end();++it)
         if(it->ContainsCoordinate(x - this->x,y - this->y))
         {
-            deque_node<CompositeWidget*> *tmp;
-            tmp=it.ptr;
-            it.ptr=children.begin().ptr;
-            children.begin().ptr=tmp;
+            CompositeWidget *tmp;
+            tmp=it.ptr->info;
+            if(tmp->isFocusable)
+            {
+                deque_node<CompositeWidget*> *nd=children.begin().ptr;
+                while(!(nd->info->isFocusable)) nd=nd->next;
+                it.ptr->info=nd->info;
+                nd->info=tmp;
+            }
             //
-            tmp->info->OnMouseDown(x - this->x,y - this->y, button);
+            tmp->OnMouseDown(x - this->x,y - this->y, button);
             break;
         }
 }

@@ -16,6 +16,7 @@ void Driver::Activate()
 int Driver::Reset()
 {
 }
+
 void Driver::Deactivate()
 {
 }
