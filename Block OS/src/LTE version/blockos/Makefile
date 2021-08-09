@@ -41,7 +41,7 @@ mykernel.iso: mykernel.bin
 	mkdir iso/boot
 	mkdir iso/boot/grub
 	cp mykernel.bin iso/boot/mykernel.bin
-	echo 'set timeout=3'  > iso/boot/grub/grub.cfg
+	echo 'set timeout=3'  >> iso/boot/grub/grub.cfg
 	echo 'set default=0' >> iso/boot/grub/grub.cfg
 	echo 'menuentry "Kernel" {' >> iso/boot/grub/grub.cfg
 	echo '	multiboot /boot/mykernel.bin' >> iso/boot/grub/grub.cfg

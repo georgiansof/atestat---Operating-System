@@ -272,5 +272,5 @@ void VideoGraphicsArray::FillRectangle(uint32_t x, uint32_t y, uint32_t w, uint3
 {
     for(int32_t Y = y; Y<y+h; ++Y)
         for(int32_t X = x; X < x+w; ++X)
-            PutPixel(X,Y,colorIndex);
+             PutPixel(X,Y,colorIndex);
 }

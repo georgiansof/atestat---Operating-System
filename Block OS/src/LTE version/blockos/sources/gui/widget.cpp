@@ -313,7 +313,7 @@ void printf(const char*);
 
 void CompositeWidget::AddChild(CompositeWidget* child)
 {
-    children.push_front(child);
+    children.push_back(child);
 }
 
 void CompositeWidget::RemoveChild(CompositeWidget* child)
@@ -331,7 +331,6 @@ void CompositeWidget::Draw(GraphicsContext* gc)
 
 void CompositeWidget::OnMouseDown(int32_t x, int32_t y, uint8_t button)
 {
-    //FIXME window overlap
     for(deque_iterator<CompositeWidget*> it=children.begin();it!=children.end();++it)
         if(it->ContainsCoordinate(x - this->x,y - this->y))
         {
@@ -355,14 +354,14 @@ void CompositeWidget::OnMouseUp(int32_t x, int32_t y, uint8_t button)
         if(it->ContainsCoordinate(x - this->x,y - this->y))
         {
             it->OnMouseUp(x - this->x,y - this->y, button);
-            break;
+            if(it->isFocusable) break;
         }
 }
 void CompositeWidget::OnMouseMove(int32_t oldx, int32_t oldy, int32_t newx, int32_t newy)
 {
     CompositeWidget *firstchild;
     for(deque_iterator<CompositeWidget*> it=children.begin();it!=children.end();++it)
-        if(it->ContainsCoordinate(oldx - this->x,oldy - this->y))
+        if(it->isFocusable && it->ContainsCoordinate(oldx - this->x,oldy - this->y))
         {
             it->OnMouseMove(oldx - this->x,oldy - this->y, newx - this->x, newy - this->y);
             firstchild=*it;

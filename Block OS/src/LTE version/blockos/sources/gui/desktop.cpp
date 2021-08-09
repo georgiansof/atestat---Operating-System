@@ -1,14 +1,30 @@
- #include <gui/desktop.h>
+#include <gui/desktop.h>
+#include <gui/colors.h>
 
  using namespace blockos;
  using namespace blockos::common;
  using namespace blockos::gui;
 
 
+TaskBar::TaskBar()
+{
+
+}
+
+void TaskBar::init(CompositeWidget *parent,uint8_t colorIndex)
+{
+    CompositeWidget::init(parent,0,185,320,15,colorIndex);
+    this->isFocusable=false;
+}
+
+
+
 Desktop::Desktop(common::int32_t w, common::int32_t h, common::uint8_t r, common::uint8_t g, common::uint8_t b) : CompositeWidget(0,0,0, w,h,r,g,b), MouseEventHandler()
 {
     MouseX = w/2;
     MouseY = h/2;
+    task_bar.init(this,GREYED_BLUE);
+    this->AddChild(&(this->task_bar));
 }
 Desktop::Desktop(common::int32_t w, common::int32_t h, common::uint8_t colorIndex) : CompositeWidget(0,0,0, w,h,colorIndex), MouseEventHandler()
 {

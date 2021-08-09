@@ -50,10 +50,12 @@ namespace blockos
         };
 
         class Window;
+        class TaskBar;
 
         class CompositeWidget : public Widget
         {
             friend Window;
+            friend TaskBar;
         protected:
             deque<CompositeWidget*> children;
 
