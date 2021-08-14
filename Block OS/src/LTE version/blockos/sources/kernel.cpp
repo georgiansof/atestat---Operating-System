@@ -15,6 +15,7 @@
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
 #include <drivers/vga.h>
+#include <drivers/ata.h>
 #include <gui/desktop.h>
 #include <gui/window.h>
 #include <multitasking.h>
@@ -206,32 +207,20 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     printf("Successfully booted BlockOS!\n\n");
     
     GlobalDescriptorTable gdt;
-
+    /************************ Allocating heap ******************/
     uint32_t* memupper = (uint32_t*)(((size_t)multiboot_structure) + 8);
     size_t heap = 10*1024*1024;
     MemoryManager memoryManager(heap, (*memupper)*1024 - heap - 10*1024);
-    printf("heap: 0x");
-    printfHex((heap >> 24) & 0xFF);
-    printfHex((heap >> 16) & 0xFF);
-    printfHex((heap >> 8) & 0xFF);
-    printfHex(heap & 0xFF);
     void* allocated = memoryManager.malloc(1024);
-    printf("\nallocated: 0x");
-    printfHex(((size_t)allocated >> 24) & 0xFF);
-    printfHex(((size_t)allocated >> 16) & 0xFF);
-    printfHex(((size_t)allocated >> 8) & 0xFF);
-    printfHex((size_t)allocated & 0xFF);
-    printf("\n");
-
+    printf("Heap initialised\n");
     /************** Multitasking **************/
     TaskManager taskManager;
+    printf("Multitasking module initialized\n");
     /*Task task1(&gdt, taskA);
     Task task2(&gdt, taskB);
     taskManager.AddTask(&task1);
-    taskManager.AddTask(&task2);
-    printf("\nMultithreading module initialized\n");*/
-    /**************************************/
-
+    taskManager.AddTask(&task2);*/
+    /************* Drivers and interrupts *************/
     InterruptManager interrupts(0x20, &gdt, &taskManager);
 #ifdef GRAPHICSMODE
     Desktop desktop(320,200,0x00,0x00,0xA8);
@@ -265,7 +254,6 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
 
     drvManager.ActivateAll();
     
-    printf("All set!\n");
     /************** VIDEO MODE INIT ************/
 #ifdef GRAPHICSMODE
     vga.SetMode(320,200,8);
@@ -276,6 +264,25 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     desktop.AddChild(win2);
 
 #endif
+    /************** Storage drivers ************/
+    // interrupt 14
+    AdvancedTechnologyAttachment ata0m(0x1F0, true);
+    AdvancedTechnologyAttachment ata0s(0x1F0, false);
+    printf("Initializing storage... Testing: \n");
+    char* atabuffer = "Storage driver test - BlockOs\n";
+    ata0s.Write28(0,(uint8_t*)atabuffer,30);
+    //ata0s.Flush(); - modified to automatically flush after Write. Not flushing breaks the sector !
+
+    ata0s.Read28(0,30);
+
+    // interrupt 15
+    AdvancedTechnologyAttachment ata1m(0x170, false);
+    AdvancedTechnologyAttachment ata1s(0x170, false);
+
+    // third: 0x1E8, int?
+    // fourth: 0x168, int?
+    /************* Pass control to user **************/
+    printf("All set!\n");
     interrupts.Activate();
     
     while(open)

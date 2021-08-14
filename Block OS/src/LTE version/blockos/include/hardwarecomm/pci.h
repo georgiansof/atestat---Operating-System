@@ -54,6 +54,7 @@ namespace blockos
 		{
 			Port32Bit dataPort;
 			Port32Bit commandPort;
+			bool printed;
 		public:
 			PeripherialComponentInterconnectController();
 			~PeripherialComponentInterconnectController();
