@@ -28,7 +28,7 @@ namespace blockos
             ~AdvancedTechnologyAttachment();
 
             void Identify();
-            void Read28(common::uint32_t sector, int count = 512);
+            void Read28(common::uint32_t sector, common::uint8_t *data, int count = 512);
             void Write28(common::uint32_t sector, common::uint8_t *data, int count);
             void Flush();
 

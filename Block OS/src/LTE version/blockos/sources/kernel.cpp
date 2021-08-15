@@ -17,6 +17,7 @@
 #include <drivers/mouse.h>
 #include <drivers/vga.h>
 #include <drivers/ata.h>
+#include <filesystem/msdospart.h>
 #include <gui/desktop.h>
 #include <gui/window.h>
 #include <multitasking.h>
@@ -27,6 +28,7 @@ using namespace blockos::hardwarecomm;
 using namespace blockos::drivers;
 using namespace blockos::gui;
 using namespace blockos::common::containers;
+using namespace blockos::filesystem;
 
 void printf(const char* str)
 {
@@ -190,7 +192,7 @@ void sysprintf(const char* str)
 void taskA()
 {
     while(true)
-        sysprintf("A");
+        sysprintf("A"); // TODO force userspace
 }
 void taskB()
 {
@@ -276,12 +278,9 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     // interrupt 14
     AdvancedTechnologyAttachment ata0m(0x1F0, true);
     AdvancedTechnologyAttachment ata0s(0x1F0, false);
-    printf("Initializing storage... Testing: \n");
-    char* atabuffer = "Storage driver test - BlockOs\n";
-    ata0s.Write28(0,(uint8_t*)atabuffer,30);
-    //ata0s.Flush(); - modified to automatically flush after Write. Not flushing breaks the sector !
+    printf("Initializing storage\n");
 
-    ata0s.Read28(0,30);
+    MSDOSPartitionTable::ReadPartitions(&ata0s);
 
     // interrupt 15
     AdvancedTechnologyAttachment ata1m(0x170, false);
