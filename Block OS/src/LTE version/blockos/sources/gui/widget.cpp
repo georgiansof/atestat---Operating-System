@@ -15,6 +15,7 @@ Widget::Widget(CompositeWidget* parent, common::int32_t x, common::int32_t y, co
     this->b = b;
     this->isFocusable = true;
 }
+
 void Widget::init(CompositeWidget* parent, common::int32_t x, common::int32_t y, common::int32_t w, common::int32_t h, common::uint8_t r, common::uint8_t g, common::uint8_t b)
 {
     this->parent = parent;

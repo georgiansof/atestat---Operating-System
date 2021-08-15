@@ -77,6 +77,8 @@ namespace blockos
             static void HandleInterruptRequest0x0F();
             static void HandleInterruptRequest0x31();
             
+            static void HandleInterruptRequest0x80();
+            
             static void HandleException0x00();
             static void HandleException0x01();
             static void HandleException0x02();

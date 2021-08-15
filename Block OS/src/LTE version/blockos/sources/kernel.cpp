@@ -1,4 +1,4 @@
-#define GRAPHICSMODE
+//#define GRAPHICSMODE
 
 #include <gui/colors.h>
 #include <common/types.h>
@@ -10,6 +10,7 @@
 #include <gdt.h>
 #include <memorymanagement.h>
 #include <hardwarecomm/interrupts.h>
+#include <syscalls.h>
 #include <hardwarecomm/pci.h>
 #include <drivers/driver.h>
 #include <drivers/keyboard.h>
@@ -181,15 +182,20 @@ public:
 };
 #endif
 
+void sysprintf(const char* str)
+{
+    asm("int $0x80" : : "a" (4), "b" (str));
+}
+
 void taskA()
 {
     while(true)
-        printf("A");
+        sysprintf("A");
 }
 void taskB()
 {
     while(true)
-        printf("B");
+        sysprintf("B");
 }
 
 typedef void (*constructor)();
@@ -222,6 +228,8 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     taskManager.AddTask(&task2);*/
     /************* Drivers and interrupts *************/
     InterruptManager interrupts(0x20, &gdt, &taskManager);
+    SyscallHandler syscalls(&interrupts, 0x80);
+
 #ifdef GRAPHICSMODE
     Desktop desktop(320,200,0x00,0x00,0xA8);
 #endif
