@@ -17,7 +17,6 @@
 #include <drivers/mouse.h>
 #include <drivers/vga.h>
 #include <drivers/ata.h>
-#include <filesystem/msdospart.h>
 #include <gui/desktop.h>
 #include <gui/window.h>
 #include <multitasking.h>
@@ -28,8 +27,21 @@ using namespace blockos::hardwarecomm;
 using namespace blockos::drivers;
 using namespace blockos::gui;
 using namespace blockos::common::containers;
-using namespace blockos::filesystem;
 
+void printf(double x)
+{
+    printf(int(x));
+    x-=int(x);
+    printf(".");
+    while(x-int(x)>0) {x*=10;printf(int(x));x-=int(x);}
+}
+void printf(double x,int precision)
+{
+    printf(int(x));
+    x-=int(x);
+    printf(".");
+    while(precision--) {x*=10;printf(int(x));x-=int(x);}
+}
 void printf(const char* str)
 {
 #ifndef GRAPHICSMODE
@@ -81,7 +93,7 @@ void printf(int32_t nr)
 {
 #ifndef GRAPHICSMODE
     char str[12];
-    int strlen=-1;
+    int StrLength=-1;
     if(nr==0)
     {
         str[0]='0';
@@ -91,12 +103,12 @@ void printf(int32_t nr)
     }
     while(nr)
     {
-        str[++strlen]=(nr%10)+'0';
+        str[++StrLength]=(nr%10)+'0';
         nr/=10;
     }
-    for(int i=0;i<(strlen+1)/2;++i)
-        Swap(str[i],str[strlen-i]);
-    str[strlen+1]=NULL;
+    for(int i=0;i<(StrLength+1)/2;++i)
+        Swap(str[i],str[StrLength-i]);
+    str[StrLength+1]=NULL;
     printf(str);
 #endif
 }
@@ -119,6 +131,20 @@ void printfHex(uint8_t key)
     msg[1] = hex[key & 0x0F];
     printf(msg); 
 #endif
+}
+bool isalphanum(char c)
+{
+    if(c>='0' && c<='9') return true;
+    if(c>='a' && c<='z') return true;
+    if(c>='A' && c<='Z') return true;
+    return false;
+}
+int strlen(char *s)
+{
+    int n=0;
+    for(int i=0;s[i];++i)
+        ++n;
+    return n;
 }
 
 #ifndef GRAPHICSMODE // cout, mousehandler, kbhandler
@@ -183,12 +209,10 @@ public:
     }
 };
 #endif
-
 void sysprintf(const char* str)
 {
     asm("int $0x80" : : "a" (4), "b" (str));
 }
-
 void taskA()
 {
     while(true)
@@ -199,7 +223,6 @@ void taskB()
     while(true)
         sysprintf("B");
 }
-
 typedef void (*constructor)();
 extern "C" constructor *start_ctors;
 extern "C" constructor *end_ctors;
@@ -280,8 +303,6 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     AdvancedTechnologyAttachment ata0s(0x1F0, false);
     printf("Initializing storage\n");
 
-    MSDOSPartitionTable::ReadPartitions(&ata0s);
-
     // interrupt 15
     AdvancedTechnologyAttachment ata1m(0x170, false);
     AdvancedTechnologyAttachment ata1s(0x170, false);
@@ -292,6 +313,15 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     printf("All set!\n");
     interrupts.Activate();
     
+    /* SLIGHTLY UNSTABLE
+    char *data="hellowww";
+    int datalen=strlen(data)+1;
+    ata0s.Write28(0,(uint8_t*)data,datalen);
+    char s[datalen]="     ";
+    ata0s.Read28(0,(uint8_t*)s,datalen);
+    printf(s);
+    */
+
     while(open)
     {
 #ifdef GRAPHICSMODE

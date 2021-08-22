@@ -16,7 +16,7 @@ SyscallHandler::~SyscallHandler()
 
 void printf(const char*);
 
-uint32_t SyscallHandler::HandleInterrupt(uint32_t esp) //TODO https://web.archive.org/web/20200620014648/http://syscalls.kernelgrok.com/
+uint32_t SyscallHandler::HandleInterrupt(uint32_t esp) //TODO https://web.archive.org/web/20200620014648/ http://syscalls.kernelgrok.com/
 {
     CPUState* cpu = (CPUState*)esp;
 

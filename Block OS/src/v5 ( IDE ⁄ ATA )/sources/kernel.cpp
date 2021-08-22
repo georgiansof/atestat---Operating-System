@@ -27,6 +27,13 @@ using namespace blockos::drivers;
 using namespace blockos::gui;
 using namespace blockos::common::containers;
 
+int StrLen(char *s)
+{
+    int n=0;
+    for(int i=0;s[i];++i)
+        ++n;
+    return n;
+}
 void printf(const char* str)
 {
 #ifndef GRAPHICSMODE
@@ -271,10 +278,10 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     AdvancedTechnologyAttachment ata0s(0x1F0, false);
     printf("Initializing storage... Testing: \n");
     char* atabuffer = "Storage driver test - BlockOs\n";
-    ata0s.Write28(0,(uint8_t*)atabuffer,30);
+    ata0s.Write28(0,(uint8_t*)atabuffer,StrLen(atabuffer));
     //ata0s.Flush(); - modified to automatically flush after Write. Not flushing breaks the sector !
 
-    ata0s.Read28(0,30);
+    ata0s.Read28(0,32);
 
     // interrupt 15
     AdvancedTechnologyAttachment ata1m(0x170, false);
