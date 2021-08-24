@@ -1,14 +1,16 @@
+ 
 #ifndef __BLOCKOS__DRIVERS__ATA_H
 #define __BLOCKOS__DRIVERS__ATA_H
 
-#include <common/types.h>
-#include <hardwarecomm/interrupts.h>
+
 #include <hardwarecomm/port.h>
+#include <common/types.h>
 
 namespace blockos
 {
     namespace drivers
     {
+        
         class AdvancedTechnologyAttachment
         {
         protected:
@@ -23,17 +25,20 @@ namespace blockos
             hardwarecomm::Port8Bit controlPort;
             
             bool master;
+            common::uint16_t bytesPerSector;
         public:
             AdvancedTechnologyAttachment(common::uint16_t portBase, bool master);
             ~AdvancedTechnologyAttachment();
-
+            
             void Identify();
-            void Read28(common::uint32_t sector, common::uint8_t *data, int count = 512);
-            void Write28(common::uint32_t sector, common::uint8_t *data, int count);
+            void Read28(common::uint32_t sector, common::uint8_t* data, int count);
+            void Write28(common::uint32_t sector, common::uint8_t* data, int count);
             void Flush();
-
         };
+        
+        
     }
 }
+
 
 #endif

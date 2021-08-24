@@ -17,6 +17,8 @@
 #include <drivers/mouse.h>
 #include <drivers/vga.h>
 #include <drivers/ata.h>
+#include <filesystem/msdospart.h>
+#include <filesystem/fat.h>
 #include <gui/desktop.h>
 #include <gui/window.h>
 #include <multitasking.h>
@@ -27,6 +29,7 @@ using namespace blockos::hardwarecomm;
 using namespace blockos::drivers;
 using namespace blockos::gui;
 using namespace blockos::common::containers;
+using namespace blockos::filesystem;
 
 void printf(double x)
 {
@@ -94,6 +97,30 @@ void printf(int32_t nr)
 #ifndef GRAPHICSMODE
     char str[12];
     int StrLength=-1;
+    if(nr<0) printf('-');
+    if(nr==0)
+    {
+        str[0]='0';
+        str[1]=null;
+        printf(str);
+        return;
+    }
+    while(nr)
+    {
+        str[++StrLength]=(nr%10)+'0';
+        nr/=10;
+    }
+    for(int i=0;i<(StrLength+1)/2;++i)
+        Swap(str[i],str[StrLength-i]);
+    str[StrLength+1]=NULL;
+    printf(str);
+#endif
+}
+void printf(uint32_t nr)
+{
+#ifndef GRAPHICSMODE
+    char str[12];
+    int StrLength=-1;
     if(nr==0)
     {
         str[0]='0';
@@ -135,6 +162,12 @@ void printfHex(uint8_t key)
 bool isalphanum(char c)
 {
     if(c>='0' && c<='9') return true;
+    if(c>='a' && c<='z') return true;
+    if(c>='A' && c<='Z') return true;
+    return false;
+}
+bool isalpha(char c)
+{
     if(c>='a' && c<='z') return true;
     if(c>='A' && c<='Z') return true;
     return false;
@@ -312,15 +345,8 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     /************* Pass control to user **************/
     printf("All set!\n");
     interrupts.Activate();
-    
-    /* SLIGHTLY UNSTABLE
-    char *data="hellowww";
-    int datalen=strlen(data)+1;
-    ata0s.Write28(0,(uint8_t*)data,datalen);
-    char s[datalen]="     ";
-    ata0s.Read28(0,(uint8_t*)s,datalen);
-    printf(s);
-    */
+    printf("\n\n\n\n\n\n\n\n");
+    MSDOSPartitionTable::ReadPartitions(&ata0s);
 
     while(open)
     {

@@ -13,6 +13,7 @@ Driver::~Driver()
 void Driver::Activate()
 {
 }
+
 int Driver::Reset()
 {
 }
