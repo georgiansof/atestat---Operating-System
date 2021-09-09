@@ -46,7 +46,7 @@ namespace blockos
         class MSDOSPartitionTable
         {
         public:
-            static void ReadPartitions(blockos::drivers::AdvancedTechnologyAttachment *hd);
+            static common::uint32_t ReadPartitions(blockos::drivers::AdvancedTechnologyAttachment *hd);
         };
         
         

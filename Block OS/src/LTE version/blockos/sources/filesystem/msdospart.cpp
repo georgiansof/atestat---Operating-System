@@ -10,7 +10,7 @@ using namespace blockos::filesystem;
 void printf(const char*);
 void printfHex(uint8_t);
 
-void MSDOSPartitionTable::ReadPartitions(blockos::drivers::AdvancedTechnologyAttachment *hd)
+uint32_t MSDOSPartitionTable::ReadPartitions(blockos::drivers::AdvancedTechnologyAttachment *hd)
 {
     
     MasterBootRecord mbr;
@@ -31,7 +31,7 @@ void MSDOSPartitionTable::ReadPartitions(blockos::drivers::AdvancedTechnologyAtt
     if(mbr.magicnumber != 0xAA55)
     {
         printf("illegal MBR");
-        return;
+        return -1;
     }
     
     
@@ -54,6 +54,7 @@ void MSDOSPartitionTable::ReadPartitions(blockos::drivers::AdvancedTechnologyAtt
         
      
         ReadBiosBlock(hd, mbr.primaryPartition[i].start_lba);
+        //return mbr.primaryPartition[i].start_lba;
     }
-    
+    return -1;
 }

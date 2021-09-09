@@ -64,6 +64,18 @@ namespace blockos
         
         
         void ReadBiosBlock(blockos::drivers::AdvancedTechnologyAttachment *hd, common::uint32_t partitionOffset);
+        
+        class FileManager
+        {
+            private:
+                    drivers::AdvancedTechnologyAttachment *hd;
+                    common::uint32_t partitionOffset;
+            public:
+                FileManager(drivers::AdvancedTechnologyAttachment *hd, common::uint32_t partitionOffset);
+                void ReadFile(char* fileName, int offset, char* data, int count = -512); // count = -1 = entire file from offset ahead
+                void WriteToFile(char* fileName, int offset, char* data, int count);
+                void AppendToFile(char* fileName, char* data, int count); 
+        };
     }
 }
 

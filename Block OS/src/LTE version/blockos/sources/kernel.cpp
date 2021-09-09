@@ -17,8 +17,9 @@
 #include <drivers/mouse.h>
 #include <drivers/vga.h>
 #include <drivers/ata.h>
-#include <filesystem/msdospart.h>
-#include <filesystem/fat.h>
+//#include <filesystem/msdospart.h>
+//#include <filesystem/fat.h>
+#include <filesystem/filemanager.h>
 #include <gui/desktop.h>
 #include <gui/window.h>
 #include <multitasking.h>
@@ -324,10 +325,12 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
 #ifdef GRAPHICSMODE
     vga.SetMode(320,200,8);
 
-    Window *win1= new Window(&desktop, 10,10,25,25, DARK_MAGENTA);
-    desktop.AddChild(win1);
-    Window *win2 = new Window(&desktop, 40,15,30,30, 0x00, 0xA8, 0x00);
-    desktop.AddChild(win2);
+     Window *win1;
+     for(int i=0;i<21;++i)
+     {
+        win1=new Window(&desktop, 10+i*5,10,25,25, DARK_MAGENTA);
+        desktop.AddChild(win1);
+     }
 
 #endif
     /************** Storage drivers ************/
@@ -340,13 +343,16 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     AdvancedTechnologyAttachment ata1m(0x170, false);
     AdvancedTechnologyAttachment ata1s(0x170, false);
 
-    // third: 0x1E8, int?
-    // fourth: 0x168, int?
+    // third: 0x1E8, interr?
+    // fourth: 0x168, interr?
     /************* Pass control to user **************/
     printf("All set!\n");
     interrupts.Activate();
-    printf("\n\n\n\n\n\n\n\n");
-    MSDOSPartitionTable::ReadPartitions(&ata0s);
+    //printf("\n\n\n\n\n\n\n\n");
+    //uint32_t primaryPartitionStart = MSDOSPartitionTable::ReadPartitions(&ata0s);
+    FileManager fileManager(&ata0s);
+    
+
 
     while(open)
     {
