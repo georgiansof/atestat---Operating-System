@@ -140,7 +140,7 @@ void AdvancedTechnologyAttachment::Write28(common::uint32_t sector, common::uint
     
     for(uint16_t i = 0; i < count; i+= 2)
     {
-        uint16_t wdata = data[i];
+        uint16_t wdata = data[i] & 0x00FF;
         if(i+1 < count)
             wdata |= ((uint16_t)data[i+1]) << 8;
 

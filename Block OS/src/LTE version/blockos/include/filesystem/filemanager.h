@@ -12,8 +12,9 @@ namespace blockos
         {
             private:
                 drivers::AdvancedTechnologyAttachment *hdd;
+                common::uint64_t size;
             public:
-                FileManager(drivers::AdvancedTechnologyAttachment *hdd);
+                FileManager(drivers::AdvancedTechnologyAttachment *hdd, common::uint64_t size);
                 void Format();
         };
     }

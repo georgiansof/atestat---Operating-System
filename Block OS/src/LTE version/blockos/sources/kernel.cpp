@@ -180,6 +180,10 @@ int strlen(char *s)
         ++n;
     return n;
 }
+void wait(float approxs) /// 10^8 operatii = 1s standard. Faster/Slower CPUs may desync.
+{
+    for(int j=0;j<approxs*100000000;++j);
+}
 
 #ifndef GRAPHICSMODE // cout, mousehandler, kbhandler
 class outStream
@@ -350,10 +354,20 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     interrupts.Activate();
     //printf("\n\n\n\n\n\n\n\n");
     //uint32_t primaryPartitionStart = MSDOSPartitionTable::ReadPartitions(&ata0s);
-    FileManager fileManager(&ata0s);
+    FileManager fileManager(&ata0s, 4ULL*1000*1000*1000); // 4 GigaBytes ( multiple of 10 )
+   // fileManager.Format();
+
+
+
+    /*char* buffer="0000000000";
+    ata0s.Write28(0,(uint8_t*)buffer,10);
+    ata0s.Flush();
+    char buffer2[12]="1111111111";
+    ata0s.Read28(0,(uint8_t*)buffer2,10);
+    buffer2[10]=0;
+    for(int i=0;i<10 && (buffer2[i]<'0' || buffer2[i]>'9');++i) buffer2[i]+='0';
+    printf(buffer2);*/
     
-
-
     while(open)
     {
 #ifdef GRAPHICSMODE
