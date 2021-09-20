@@ -4,8 +4,6 @@ void printf(char*);
 
 extern "C" void kernelMain(void* multiboot_structure, unsigned int magicnumber)
 {
-    /// cuvantul -extern- arata faptul ca functia este apelata din alt limbaj de programare ( in acest caz ASM )
-   /// El este necesar pentru ca modul de a numi functiile este diferit de la un limbaj la altul si pot aparea erori.
     printf("Hello World!"); // un mesaj de proba
     while(true);
 }
@@ -28,7 +26,7 @@ void printf(char* str) /// functioneaza pe principiul unei masini de scris clasi
                 ++y,x=0;
                 break;
             default: // altfel afisam
-            VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | str[i]; // avem grija sa modificam doar ultimii 8 biti ( de text ), pentru ca primii 8 sunt pentru culoarea textului si a fontului
+            VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0x0F00) | str[i]; // avem grija sa modificam doar ultimii 8 biti ( de text ), pentru ca primii 8 sunt pentru culoarea textului si a fontului
             ++x;
         }
         
