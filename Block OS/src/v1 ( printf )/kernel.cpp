@@ -26,7 +26,9 @@ void printf(char* str) /// functioneaza pe principiul unei masini de scris clasi
                 ++y,x=0;
                 break;
             default: // altfel afisam
-            VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0x0F00) | str[i]; // avem grija sa modificam doar ultimii 8 biti ( de text ), pentru ca primii 8 sunt pentru culoarea textului si a fontului
+            VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0x0F00) | str[i]; // avem grija sa modificam doar ultimii 8 biti 
+                                                                          // ( de text ), pentru ca primii 8 sunt pentru 
+                                                                         // culoarea textului si a fontului
             ++x;
         }
         
