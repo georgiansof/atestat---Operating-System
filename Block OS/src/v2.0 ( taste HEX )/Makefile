@@ -13,6 +13,12 @@ objects = loader.o gdt.o port.o interruptstubs.o interrupts.o keyboard.o kernel.
 mykernel.bin: linker.ld $(objects)
 	ld $(LDPARAMS) -T $< -o $@ $(objects) 
 
+entry:
+	echo 'menuentry "Kernel" {' >> /boot/grub/grub.cfg
+	echo '  multiboot /boot/mykernel.bin' >> /boot/grub/grub.cfg
+	echo '  boot' >> /boot/grub/grub.cfg
+	echo '}' >> /boot/grub/grub.cfg
+
 install: mykernel.bin
 	sudo cp $< /boot/mykernel.bin
 

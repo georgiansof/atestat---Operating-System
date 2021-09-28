@@ -50,7 +50,13 @@ mykernel.iso: mykernel.bin
 	echo '}' >> iso/boot/grub/grub.cfg
 	grub-mkrescue --output=mykernel.iso iso
 	rm -rf iso
-	
+
+entry:
+	echo 'menuentry "Kernel" {' >> /boot/grub/grub.cfg
+	echo '  multiboot /boot/mykernel.bin' >> /boot/grub/grub.cfg
+	echo '  boot' >> /boot/grub/grub.cfg
+	echo '}' >> /boot/grub/grub.cfg
+
 install: mykernel.bin
 	sudo cp $< /boot/mykernel.bin
 	
