@@ -42,6 +42,9 @@ run: mykernel.iso
 	(killall VirtualBox && sleep 1) || true
 	VirtualBoxVM --startvm "atestat" &
 
-.PHONY: clean
+.PHONY: clean exec
 clean:
 	rm -f $(objects) mykernel.bin mykernel.iso ../../iso_output/mykernel.iso
+exec:
+	make clean
+	make run

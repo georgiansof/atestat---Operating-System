@@ -54,7 +54,7 @@ extern "C" void callConstructors()
 extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic*/)
 {
     bool open=1;
-    printf("Successfully booted kernel version 2.0!\n"); 
+    printf("Successfully booted kernel version 2.1!\n");
     
     GlobalDescriptorTable gdt; 
     InterruptManager interrupts(&gdt);
