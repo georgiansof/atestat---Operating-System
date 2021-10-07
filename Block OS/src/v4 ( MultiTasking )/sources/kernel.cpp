@@ -220,6 +220,18 @@ public:
                             | ((VideoMemory[80*y+x] & 0x0F00) << 4) 
                             | ((VideoMemory[80*y+x] & 0x00FF)); 
     }
+    void OnMouseDown(uint8_t button)
+    {
+        if(button==1) printf("LMB_DOWN");
+        if(button==2) printf("RMB_DOWN");
+        if(button==3) printf("WMB_DOWN");
+    }
+    void OnMouseUp(uint8_t button)
+    {
+        if(button==1) printf("LMB_UP");
+        if(button==2) printf("RMB_UP");
+        if(button==3) printf("WMB_UP");
+    }
 };
 #endif
 
