@@ -24,6 +24,7 @@ namespace blockos
         
         class MouseDriver : public blockos::hardwarecomm::InterruptHandler, public Driver
         {
+            bool *virtualmode;
             blockos::hardwarecomm::Port8Bit dataport;
             blockos::hardwarecomm::Port8Bit commandport;
             
@@ -33,7 +34,7 @@ namespace blockos
             
             MouseEventHandler* handler;
         public:
-            MouseDriver(blockos::hardwarecomm::InterruptManager* manager,MouseEventHandler* handler);
+            MouseDriver(blockos::hardwarecomm::InterruptManager* manager,MouseEventHandler* handler,bool *virtualmode);
             ~MouseDriver();
             virtual blockos::common::uint32_t HandleInterrupt(blockos::common::uint32_t esp);
             virtual void Activate();

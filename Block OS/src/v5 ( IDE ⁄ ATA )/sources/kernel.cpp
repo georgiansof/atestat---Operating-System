@@ -27,6 +27,8 @@ using namespace blockos::drivers;
 using namespace blockos::gui;
 using namespace blockos::common::containers;
 
+bool virtualmode;
+
 int StrLen(char *s)
 {
     int n=0;
@@ -257,16 +259,16 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     KeyboardDriver keyboard(&interrupts, &kbhandler);
 #endif
     drvManager.AddDriver(&keyboard);
+	PeripherialComponentInterconnectController PCIcontroller(&virtualmode);
+	PCIcontroller.SelectDrivers(&drvManager, &interrupts);
 #ifdef GRAPHICSMODE
-    MouseDriver mouse(&interrupts, &desktop);
+    MouseDriver mouse(&interrupts, &desktop,&virtualmode);
 #else
     MouseToConsole mousehandler;
-    MouseDriver mouse(&interrupts, &mousehandler);
+    MouseDriver mouse(&interrupts, &mousehandler,&virtualmode);
 #endif
     drvManager.AddDriver(&mouse);
         
-	PeripherialComponentInterconnectController PCIcontroller;
-	PCIcontroller.SelectDrivers(&drvManager, &interrupts);
 #ifdef GRAPHICSMODE
     VideoGraphicsArray vga;
     desktop.gc=&vga;

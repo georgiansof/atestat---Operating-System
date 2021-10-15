@@ -52,10 +52,11 @@ namespace blockos
 
 		class PeripherialComponentInterconnectController /// PCI controller
 		{
+			bool *virtualmode;
 			Port32Bit dataPort;
 			Port32Bit commandPort;
 		public:
-			PeripherialComponentInterconnectController();
+			PeripherialComponentInterconnectController(bool *virtualmode);
 			~PeripherialComponentInterconnectController();
 			
 			blockos::common::uint32_t Read(blockos::common::uint16_t bus, blockos::common::uint16_t device, blockos::common::uint16_t function, blockos::common::uint32_t registeroffset);
