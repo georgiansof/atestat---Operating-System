@@ -35,12 +35,13 @@ void MouseEventHandler::OnMouseMove(int x, int y)
     
 }
 
-MouseDriver::MouseDriver(InterruptManager* manager, MouseEventHandler* handler) 
+MouseDriver::MouseDriver(InterruptManager* manager, MouseEventHandler* handler, bool *virtualmode) 
 :InterruptHandler(manager,0x2C),
 dataport(0x60),
 commandport(0x64)
 {
     this->handler = handler;
+    this->virtualmode = virtualmode;
 }
 
 MouseDriver::~MouseDriver()
@@ -48,8 +49,9 @@ MouseDriver::~MouseDriver()
 }
 
 void MouseDriver::Activate()
-{
-    offset = 0;
+{/// offset 0 - virtualbox , 2 - instalat
+    if((*virtualmode)==1) offset = 0;
+    else offset=2; 
     buttons = 0;
 	if(handler != 0)
 		handler->OnActivate();

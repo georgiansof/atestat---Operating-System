@@ -45,7 +45,7 @@ MouseDriver::~MouseDriver()
 
 void MouseDriver::Activate()
 {
-    offset = 0;
+    offset = 2;
     buttons = 0;
 	if(handler != 0)
 		handler->OnActivate();

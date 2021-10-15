@@ -8,17 +8,17 @@ void printfHex(uint8_t);
 
 PeripherialComponentInterconnectDeviceDescriptor::PeripherialComponentInterconnectDeviceDescriptor()
 {
-	
 }
 PeripherialComponentInterconnectDeviceDescriptor::~PeripherialComponentInterconnectDeviceDescriptor()
 {
 	
 }
 
-PeripherialComponentInterconnectController::PeripherialComponentInterconnectController()
+PeripherialComponentInterconnectController::PeripherialComponentInterconnectController(bool *virtualmode)
 : dataPort(0xCFC),
   commandPort(0xCF8)
 {
+	this->virtualmode=virtualmode;
 }
 
 PeripherialComponentInterconnectController::~PeripherialComponentInterconnectController()
@@ -95,6 +95,9 @@ void PeripherialComponentInterconnectController::SelectDrivers(DriverManager* dr
 				printfHex((dev.device_id & 0xFF00) >> 8);
 				printfHex(dev.device_id & 0xFF);
 				printf("\n");
+
+				if(dev.device_id==0xBEEF && dev.vendor_id==0x80EE) *virtualmode=1;
+
 			}
 		}
 	}

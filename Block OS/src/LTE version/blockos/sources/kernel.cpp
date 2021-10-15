@@ -1,4 +1,4 @@
-//#define GRAPHICSMODE
+#define GRAPHICSMODE
 
 #include <gui/colors.h>
 #include <common/types.h>
@@ -366,7 +366,7 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t /*multiboot_magic
     interrupts.Activate();
     //printf("\n\n\n\n\n\n\n\n");
     //uint32_t primaryPartitionStart = MSDOSPartitionTable::ReadPartitions(&ata0s);
-    FileManager fileManager(&ata0s, 4ULL*1000*1000*1000); // 4 GigaBytes ( multiple of 10 )
+    //FileManager fileManager(&ata0s, 4ULL*1000*1000*1000); // 4 GigaBytes ( multiple of 10 )
    // fileManager.Format();
 
 
