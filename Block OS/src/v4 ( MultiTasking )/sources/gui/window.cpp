@@ -38,7 +38,7 @@ Window::Window(Widget* parent,
 
 Window::~Window()
 {
-    CompositeWidget::~CompositeWidget();
+    this->~CompositeWidget();
 }
 
 void Window::OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button)

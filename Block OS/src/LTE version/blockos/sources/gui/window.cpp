@@ -60,7 +60,7 @@ void Button::initialise(Window* winparent, CompositeWidget *parent, bool type)
 
 Button::~Button()
 {
-    Widget::~Widget();
+    this->~Widget();
 }
 
 void Button::OnMouseDown(common::int32_t x, common::int32_t y, common::uint8_t button)
@@ -157,7 +157,7 @@ Window::Window() : CompositeWidget()
 Window::~Window()
 {
     window_bar.~WindowBar();
-    CompositeWidget::~CompositeWidget();
+    this->~CompositeWidget();
     parent->RemoveChild(this);
 }
 
