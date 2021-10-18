@@ -79,7 +79,6 @@ bool VideoGraphicsArray::SetMode(uint32_t width, uint32_t height, uint32_t color
 {
     if(!SupportsMode(width, height, colordepth))
         return false;
-    /********** NOT MY CODE *****************/
 
     unsigned char g_320x200x256[] =
     {
@@ -101,7 +100,7 @@ bool VideoGraphicsArray::SetMode(uint32_t width, uint32_t height, uint32_t color
         0x41, 0x00, 0x0F, 0x00,	0x00
     };
 
-    /********** ENDED NOT MY CODE **************/
+
     WriteRegisters(g_320x200x256);
     FrameBufferSegment=GetFrameBufferSegment();
     return true;
