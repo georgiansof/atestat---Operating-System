@@ -14,7 +14,7 @@
 #define NULL 0
 #define null 0
 
-//#define GRAPHICSMODE
+#define GRAPHICSMODE
 
 #ifdef GRAPHICSMODE
 //
