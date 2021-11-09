@@ -1,0 +1,14 @@
+sudo fdisk /dev/sda
+o
+n
+p
+1
+enter
+enter
+w
+tce-load -w -i dosftools.tcz (sau din apps)
+mkfs.vfat -F 32 /dev/sda1
+mount
+sync
+dismount
+exit
