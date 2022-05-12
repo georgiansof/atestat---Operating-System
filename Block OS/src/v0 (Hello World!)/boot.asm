@@ -1,17 +1,18 @@
-mov ah, 0x0e 
+mov ah,0x0E
 
-mov al, ’H’ 
-int 0x10 
-mov al, ’e’
+mov al,'H'
 int 0x10
-mov al, ’l’
+mov al,'e'
 int 0x10
-mov al, ’l’
+mov al,'l'
 int 0x10
-mov al, ’o’
+mov al,'l'
+int 0x10
+mov al,'o'
 int 0x10
 
-jmp $ 
+jmp $
 
 times 510-($-$$) db 0
-dw 0xaa55
+
+dw 0xAA55
