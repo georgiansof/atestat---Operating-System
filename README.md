@@ -15,7 +15,7 @@ Simple OS. POSIX compliant. Features:
 
 photos:
 
-![alt text]https://imgur.com/AwFbwo7.png
+![alt text](https://imgur.com/AwFbwo7.png)
 
-![alt_text]https://imgur.com/fbmboCl.png
+![alt_text](https://imgur.com/fbmboCl.png)
 
