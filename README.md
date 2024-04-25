@@ -1,6 +1,6 @@
 # atestat---Operating-System
 
-Simple OS. POSIX compliant. Features:
+Simple OS. Features:
 - multithreading
 - dynamic memory allocation
 - syscalls ( conceptual, no functions written )
