@@ -1,5 +1,7 @@
 # atestat---Operating-System
 
+The (big) documentation file can be found in BlockOS folder.
+
 Simple OS. Features:
 - multithreading
 - dynamic memory allocation
